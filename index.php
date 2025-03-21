@@ -1,5 +1,22 @@
 <?php
 
+/**
+ * Helper class for date-related utilities.
+ */
+class DateHelper
+{
+    /**
+     * Gets the current year in the 'Europe/London' timezone.
+     *
+     * @return string The current year as a string.
+     */
+    public static function currentYearLondon(): string
+    {
+        return (new DateTime('now', new DateTimeZone('Europe/London')))->format('Y');
+    }
+}
+
+
 // Get postcodes from the query string, sanitize the input and convert to an
 // array
 function getPostcodesArray()
@@ -218,7 +235,7 @@ $imd_data = $db->query(
     <footer>
         <div class="footer-content">
             <p>The IMD Checker is a tiny thing made with <a href="https://pagespeed.web.dev/analysis/https-charlesroper-com-tools-imd/a7pvmpj83q">lean</a> but boring code, some open data, and plenty of ❤️.</p>
-            <p>Originally made for the <a href="https://www.field-studies-council.org/">Field Studies Council</a>. Copyright &copy; <?php echo gmdate('Y'); ?> Charles Roper. <a href="https://charlesroper.com/">Get in touch</a>.</p>
+            <p>Originally made for the <a href="https://www.field-studies-council.org/">Field Studies Council</a>. Copyright &copy; <?php echo (new DateTime('now', new DateTimeZone('Europe/London')))->format('Y'); ?> Charles Roper. <a href="https://charlesroper.com/">Get in touch</a>.</p>
             <p>
                 <svg viewBox="0 0 1065 214" xmlns="http://www.w3.org/2000/svg" style="width:200px; margin: 1.5em 0 0 -.7em;">
 
@@ -234,9 +251,9 @@ $imd_data = $db->query(
                 </a>
             </p>
 
-            <p class="footer-separate">Contains OS data &copy; Crown copyright and database rights <?php echo gmdate('Y'); ?></p>
-            <p>Contains Royal Mail data © Royal Mail copyright and database rights <?php echo gmdate('Y'); ?></p>
-            <p>Contains National Statistics data © Crown copyright and database rights <?php echo gmdate('Y'); ?></p>
+            <p class="footer-separate">Contains OS data &copy; Crown copyright and database rights <?php echo DateHelper::currentYearLondon(); ?></p>
+            <p>Contains Royal Mail data © Royal Mail copyright and database rights <?php echo DateHelper::currentYearLondon(); ?></p>
+            <p>Contains National Statistics data © Crown copyright and database rights <?php echo DateHelper::currentYearLondon(); ?></p>
 
             <p class="footer-separate">Made in The United Kingdom.</p>
             <div class="flags">
