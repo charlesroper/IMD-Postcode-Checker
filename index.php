@@ -208,9 +208,11 @@ $imd_data = $db->query(
                 $row_count = (int) $imd_data_count->fetchColumn();
 
                 if ($row_count > 0) {
+                    $output = '';
                     foreach ($imd_data as $row) {
-                        echo outputTableRow($row, $fields_to_output);
+                        $output .= outputTableRow($row, $fields_to_output);
                     }
+                    echo $output;
                     echo '</table>';
                 } else {
                     echo '<tr><td colspan="' . count($fields_to_output) . '">No results found.</td></tr></table>';
