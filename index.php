@@ -218,7 +218,7 @@ $imd_data = $db->query(
     <footer>
         <div class="footer-content">
             <p>The IMD Checker is a tiny thing made with <a href="https://pagespeed.web.dev/analysis/https-charlesroper-com-tools-imd/a7pvmpj83q">lean</a> but boring code, some open data, and plenty of ❤️.</p>
-            <p>Originally made for the <a href="https://www.field-studies-council.org/">Field Studies Council</a>. Copyright &copy; <?php echo gmdate('Y'); ?> Charles Roper.</p>
+            <p>Originally made for the <a href="https://www.field-studies-council.org/">Field Studies Council</a>. Copyright &copy; <?php echo gmdate('Y'); ?> Charles Roper. <a href="https://charlesroper.com/">Get in touch</a>.</p>
             <p>
                 <svg viewBox="0 0 1065 214" xmlns="http://www.w3.org/2000/svg" style="width:200px; margin: 1.5em 0 0 -.7em;">
 
