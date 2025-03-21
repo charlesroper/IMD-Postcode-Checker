@@ -94,9 +94,10 @@ $db = new PDO('sqlite:./db/imd.sqlite3');
 
 // Get a count of postcodes matching those entered into the textarea. This is
 // used prevent empty results from rendering.
-$imd_data_count = $db->query(
-    "SELECT COUNT() FROM onspd_aug19 WHERE onspd_aug19.pcds IN ( $postcodes_for_sql )"
-);
+$imd_data_count = $db->query("SELECT COUNT() FROM onspd_aug19 WHERE onspd_aug19.pcds IN ($postcodes_for_sql)");
+if (!$imd_data_count) {
+    throw new Exception("Database query failed: " . implode(", ", $db->errorInfo()));
+}
 
 // The main database query
 $imd_data = $db->query(
