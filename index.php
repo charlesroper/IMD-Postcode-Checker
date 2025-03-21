@@ -7,15 +7,27 @@ $current_year = (new DateTime('now', new DateTimeZone('Europe/London')))->format
 // array
 function getPostcodesArray()
 {
+    // Sanitize the input to prevent XSS attacks and SQL injection.
     $safe_postcodes = filter_input(INPUT_GET, 'p', FILTER_SANITIZE_SPECIAL_CHARS);
 
+    // If the input is empty, return an empty array.
     if (empty($safe_postcodes)) {
         return array();
     }
 
-    $safe_postcodes = explode("\n", $safe_postcodes);
+    // Split the string by newline characters into an array of lines.
+    $lines = explode("\n", $safe_postcodes);
 
-    return array_map('strtoupper', $safe_postcodes);
+    // Remove any extra whitespace from each line.
+    $trimmedLines = array_map('trim', $lines);
+
+    // Filter out any empty strings (lines that were blank).
+    $emptyLinesRemoved = array_filter($trimmedLines);
+
+    // Uppercase all postcodes to ensure consistency.
+    $safe_postcodes = array_map('strtoupper', $emptyLinesRemoved);
+
+    return $safe_postcodes;
 }
 
 // Get the decile value from the query string and validate it, or return a
