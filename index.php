@@ -4,7 +4,7 @@
 // array
 function getPostcodesArray()
 {
-    $safe_postcodes = filter_input(INPUT_GET, 'p', FILTER_SANITIZE_STRING);
+    $safe_postcodes = filter_input(INPUT_GET, 'p', FILTER_SANITIZE_SPECIAL_CHARS);
 
     if (empty($safe_postcodes)) {
         return array();
