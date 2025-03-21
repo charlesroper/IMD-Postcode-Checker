@@ -1,20 +1,6 @@
 <?php
 
-/**
- * Helper class for date-related utilities.
- */
-class DateHelper
-{
-    /**
-     * Gets the current year in the 'Europe/London' timezone.
-     *
-     * @return string The current year as a string.
-     */
-    public static function currentYearLondon(): string
-    {
-        return (new DateTime('now', new DateTimeZone('Europe/London')))->format('Y');
-    }
-}
+$current_year = (new DateTime('now', new DateTimeZone('Europe/London')))->format('Y');
 
 
 // Get postcodes from the query string, sanitize the input and convert to an
@@ -251,9 +237,9 @@ $imd_data = $db->query(
                 </a>
             </p>
 
-            <p class="footer-separate">Contains OS data &copy; Crown copyright and database rights <?php echo DateHelper::currentYearLondon(); ?></p>
-            <p>Contains Royal Mail data © Royal Mail copyright and database rights <?php echo DateHelper::currentYearLondon(); ?></p>
-            <p>Contains National Statistics data © Crown copyright and database rights <?php echo DateHelper::currentYearLondon(); ?></p>
+            <p class="footer-separate">Contains OS data &copy; Crown copyright and database rights <?php echo $current_year; ?></p>
+            <p>Contains Royal Mail data © Royal Mail copyright and database rights <?php echo $current_year; ?></p>
+            <p>Contains National Statistics data © Crown copyright and database rights <?php echo $current_year; ?></p>
 
             <p class="footer-separate">Made in The United Kingdom.</p>
             <div class="flags">
