@@ -36,13 +36,13 @@ function getPostcodesArray()
 // default value if there is no user input
 function getDecileInt()
 {
-    $options = array(
-        'options' => array(
+    $options = [
+        'options' => [
             'default'   => 10,
             'min_range' => 1,
             'max_range' => 10,
-        ),
-    );
+        ],
+    ];
 
     return filter_input(INPUT_GET, 'd', FILTER_VALIDATE_INT, $options);
 }
