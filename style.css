@@ -7,6 +7,7 @@
   --med: #909090;
   --dark: #555;
   --dark-extra: #000;
+  --error: #b00;
 }
 
 *,
@@ -80,7 +81,9 @@ select {
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
 }
 
 header,
@@ -101,11 +104,11 @@ footer {
 }
 
 .footer-content > * + * {
-  margin-top: .5em;
+  margin-top: 0.5em;
 }
 
 .footer-content > p {
-  font-size: .8em;
+  font-size: 0.8em;
 }
 
 .flow {
@@ -117,7 +120,7 @@ footer {
 }
 
 h1 {
-  margin: .5em 0;
+  margin: 0.5em 0;
   font-size: 2rem;
   line-height: 1.25em;
 }
@@ -132,10 +135,10 @@ label {
 .more-detail {
   display: block;
   line-height: 1.25em;
-  font-size: .85rem;
+  font-size: 0.85rem;
   font-weight: normal;
   color: var(--dark);
-  margin: .5em 0 .5em 0;
+  margin: 0.5em 0 0.5em 0;
 }
 
 .more-detail + br {
@@ -146,12 +149,12 @@ textarea,
 input {
   max-width: 60ch;
   min-width: 100%;
-  padding: .5em .5em;
+  padding: 0.5em 0.5em;
 }
 
 button {
   font-weight: bold;
-  padding: .5em 1em;
+  padding: 0.5em 1em;
   background-color: var(--button);
   color: var(--dark-extra);
   border: 2px solid var(--dark-extra);
@@ -190,7 +193,7 @@ input {
   border-width: 2px;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -222,12 +225,12 @@ details {
   background-color: var(--light);
   border: 2px solid var(--dark);
   margin: 2em 0;
-  font-size: .9em
+  font-size: 0.9em;
 }
 
 details > summary {
   cursor: pointer;
-  padding: .5em;
+  padding: 0.5em;
 }
 
 details > *:not(summary) {
@@ -235,7 +238,7 @@ details > *:not(summary) {
 }
 
 details > * + * {
-  margin-top: 1em
+  margin-top: 1em;
 }
 
 details > ul {
@@ -284,7 +287,7 @@ details[open] > summary {
 
 button:focus,
 button:hover {
-  background-color: var(--highlight)
+  background-color: var(--highlight);
 }
 
 .footer-separate {
@@ -308,17 +311,25 @@ footer a:hover {
 }
 
 .github a:hover {
-	outline: 4px solid var(--highlight);
+  outline: 4px solid var(--highlight);
   outline-offset: 0px;
 }
 
 .github svg {
   height: 2em;
-  margin-right: .5em;
+  margin-right: 0.5em;
 }
 
 .github a:focus svg > path,
 .github a:hover svg > path {
   fill: var(--dark-extra);
   background-color: var(--highlight);
+}
+
+.error {
+  color: var(--error);
+  background: color-mix(in srgb, currentColor, transparent 90%);
+  border: 2px solid var(--error);
+  padding: 1em;
+  margin-bottom: 1em;
 }
