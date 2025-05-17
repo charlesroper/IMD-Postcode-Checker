@@ -94,43 +94,55 @@ function outputTableRow($row, $fields)
 }
 
 $postcodes = getPostcodesArray($postcodes_querystring);
+
+// Limit postcodes to 900
+$MAX_POSTCODES = 900;
+$postcodes_error = '';
+if (count($postcodes) > $MAX_POSTCODES) {
+    $postcodes_error = "You have entered more than $MAX_POSTCODES postcodes. Please reduce your list and try again.";
+    $postcodes = array_slice($postcodes, 0, $MAX_POSTCODES);
+}
+
 $placeholders = postcodePlaceholdersForSql($postcodes_querystring);
 $decile = getDecileInt();
 
-// Initialise the SQLite database
-$db = new PDO('sqlite:./db/imd.sqlite3');
+// Only run queries if not exceeding limit
+if (!$postcodes_error) {
+    // Initialise the SQLite database
+    $db = new PDO('sqlite:./db/imd.sqlite3');
 
-// Get a count of postcodes matching those entered into the textarea. This is
-// used prevent empty results from rendering.
-$sql = $db->prepare("SELECT COUNT(*) FROM onspd_aug19 WHERE pcds IN ($placeholders)");
-$sql->execute($postcodes);
-$imd_data_count = (int)$sql->fetchColumn();
+    // Get a count of postcodes matching those entered into the textarea. This is
+    // used prevent empty results from rendering.
+    $sql = $db->prepare("SELECT COUNT(*) FROM onspd_aug19 WHERE pcds IN ($placeholders)");
+    $sql->execute($postcodes);
+    $imd_data_count = (int)$sql->fetchColumn();
 
-// The main database query
-$sql = $db->prepare(
-    "SELECT
-        onspd.pcds,
-        imd.lsoa_name_11,
-        imd.imd_rank,
-        imd.imd_decile
-    FROM
-        imd19 AS imd
-    INNER JOIN
-        onspd_aug19 AS onspd ON imd.lsoa_code_11 = onspd.lsoa11
-    WHERE
-        onspd.pcds IN ($placeholders)
-    AND
-        imd.imd_decile <= ?"
-);
+    // The main database query
+    $sql = $db->prepare(
+        "SELECT
+            onspd.pcds,
+            imd.lsoa_name_11,
+            imd.imd_rank,
+            imd.imd_decile
+        FROM
+            imd19 AS imd
+        INNER JOIN
+            onspd_aug19 AS onspd ON imd.lsoa_code_11 = onspd.lsoa11
+        WHERE
+            onspd.pcds IN ($placeholders)
+        AND
+            imd.imd_decile <= ?"
+    );
 
-// Add the decile as the final parameter
-$params = array_merge($postcodes, [$decile]);
+    // Add the decile as the final parameter
+    $params = array_merge($postcodes, [$decile]);
 
-// Execute the statement with all parameters
-$sql->execute($params);
+    // Execute the statement with all parameters
+    $sql->execute($params);
 
-// Now fetch the data
-$imd_data = $sql->fetchAll(PDO::FETCH_ASSOC);
+    // Now fetch the data
+    $imd_data = $sql->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <!DOCTYPE html>
@@ -152,7 +164,11 @@ $imd_data = $sql->fetchAll(PDO::FETCH_ASSOC);
     </header>
 
     <main>
-
+        <?php if ($postcodes_error): ?>
+            <div class="error">
+                <?php echo htmlspecialchars($postcodes_error, ENT_QUOTES, 'UTF-8'); ?>
+            </div>
+        <?php endif; ?>
         <details>
             <summary>
                 <h2>What is this?</h2>
@@ -192,7 +208,7 @@ $imd_data = $sql->fetchAll(PDO::FETCH_ASSOC);
         <form action="./index.php#data" method="get" class="flow">
             <label for="postcodes">
                 Enter Postcodes<br>
-                <span class="more-detail">Enter one postcode per line. Press the <i>Search IMD</i> button when ready to check them against the IMD.</span><br>
+                <span class="more-detail">Enter one postcode per line (maximum 900). Press the <i>Search IMD</i> button when ready to check them against the IMD.</span><br>
                 <textarea id="postcodes" name="p" rows="6"><?php echo postcodesForTextarea($postcodes_querystring); ?></textarea><br>
             </label>
             <label for="decile">
@@ -203,8 +219,7 @@ $imd_data = $sql->fetchAll(PDO::FETCH_ASSOC);
             <button type="submit">Search IMD</button>
         </form><br>
 
-        <?php if (!empty($postcodes_querystring)) : ?>
-
+        <?php if (!empty($postcodes_querystring) && !$postcodes_error) : ?>
             <table id="data">
                 <tr>
                     <th>Postcode</th>
@@ -212,12 +227,10 @@ $imd_data = $sql->fetchAll(PDO::FETCH_ASSOC);
                     <th>IMD Rank</th>
                     <th>IMD Decile</th>
                 </tr>
-
             <?php endif; ?>
 
             <?php
-
-            if (!empty($postcodes_querystring)) {
+            if (!empty($postcodes_querystring) && !$postcodes_error) {
 
                 $fields_to_output = ['pcds', 'lsoa_name_11', 'imd_rank', 'imd_decile'];
 
