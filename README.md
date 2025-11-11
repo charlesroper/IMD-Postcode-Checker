@@ -1,4 +1,4 @@
-# IMD Postcode Checker
+# IMD Postcode Checker 2025
 
 The IMD Postcode Checker is a tiny thing made with lean but boring code,
 open data and plenty of ❤️.
@@ -33,18 +33,19 @@ weights:
 - Barriers to Housing and Services (9.3%)
 - Living Environment Deprivation (9.3%)
 
+More details can be found on the government's [English indices of deprivation 2025: frequently asked questions](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025/english-indices-of-deprivation-2025-frequently-asked-questions) page.
+
 ## Data used in this tool
 
-- [ONS Postcode Directory (ONSPD)](https://www.ons.gov.uk/methodology/geography/geographicalproducts/postcodeproducts) (last retrieved: 2019-10-17)
-- [English Index of Multiple Deprivation 2019 (IMD)](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019) (last retrieved: 2019-10-17)
+- [English Index of Multiple Deprivation 2025](https://deprivation.communities.gov.uk/download-all)
 
 ## Installing for local development
 
 This project is a dead simple single file PHP script plus a SQLite database. The database is rather large, so I distribute it in a compressed 7zip file.
 
 1. Clone or download the code
-2. Extract the SQLite database file found in `db\imd.sqlite3.7z`. The `imd.sqlite3` file should be placed in the `db` folder.
-3. Start a local PHP server in the root directory of the project: ` php -S localhost:8000`
+2. Extract the SQLite database file found in `db\imd25.sqlite3.7z`. The `imd25.sqlite3` file should be placed in the `db` folder.
+3. Start a local PHP server in the root directory of the project: `php -S localhost:8000`
 4. Visit `http://localhost:8000`
 
 Note: you might need to [install PHP](https://www.php.net/manual/en/install.php) locally first. If you get errors, check your `php.ini` file and make sure `extension=pdo_sqlite` is enabled.
@@ -52,10 +53,4 @@ Note: you might need to [install PHP](https://www.php.net/manual/en/install.php)
 ## Technical notes
 
 The tool is a single PHP file, a stylesheet and a SQLite database containing
-some stripped-back ONSPD and IMD data. Specifically, we're using only the
-following columns from those data sets:
-
-    onspd.pcds
-    imd.lsoa_name_11
-    imd.imd_rank
-    imd.imd_decile
+some stripped-back IMD data.

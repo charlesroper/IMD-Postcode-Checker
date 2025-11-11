@@ -1,4 +1,4 @@
 .vscode/
 
 db/*
-!db/imd.sqlite3.7z
+!db/imd25.sqlite3.7z
