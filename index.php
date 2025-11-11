@@ -205,8 +205,8 @@ if (!$postcodes_error) {
       <h3>Download the data used in this tool</h3>
 
       <ul>
-        <li><a href="/db/imd25.sqlite3.7z">IMD 2025 SQLite database – imd25.sqlite3.7z (7.7 MB)</a></li>
-        <li><a href="/db/imd25.csv.7z">IMD 2025 CSV file – imd25.csv.7z (3.2 MB)</a></li>
+        <li><a href="./db/imd25.sqlite3.7z">IMD 2025 SQLite database – imd25.sqlite3.7z (7.7 MB)</a></li>
+        <li><a href="./db/imd25.csv.7z">IMD 2025 CSV file – imd25.csv.7z (3.2 MB)</a></li>
         <li><a href="https://deprivation.communities.gov.uk/download-all">English Index of Multiple Deprivation 2025</a></li>
       </ul>
     </details>
