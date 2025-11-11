@@ -169,27 +169,35 @@ if (!$postcodes_error) {
         <h2>What is this?</h2>
       </summary>
 
-      <p>This tool enables you to look up the Index of Multiple Deprivation 2025 rank for a list of postcodes. The lower the rank, the more deprived the area.</p>
+      <h3>Look up IMD 2025 ranks for postcodes</h3>
 
-      <p>The results can be limited to a maximum decile value. A <i>decile</i> is a range divided into 10 chunks similar to the way a percentage is a range divided into 100 chunks. A decile of 1 means the postcode is in the bottom 10% of the deprivation index, a decile of 2 means the postcode is in the bottom 20%, and so on.</p>
+      <p>Use this tool to find the Index of Multiple Deprivation (IMD) 2025 rank for postcodes in England. Lower ranks indicate more deprivation – rank 1 is the most deprived area.</p>
+
+      <h3>Limit by decile (optional)</h3>
+
+      <p>You can limit results to a maximum decile. A <strong>decile</strong> splits all areas into ten equal groups:</p>
+
+      <ul>
+        <li><strong>Decile 1</strong> – most deprived 10%</li>
+        <li><strong>Decile 2</strong> – most deprived 20%</li>
+        <li>…</li>
+        <li><strong>Decile 10</strong> – least deprived 10%</li>
+      </ul>
 
       <h3>What is the IMD?</h3>
 
-      <p>The Index of Multiple Deprivation, commonly known as the IMD, is the official measure of relative deprivation for small areas in England.</p>
+      <p>The IMD is the official measure of <strong>relative</strong> deprivation for small areas in England, called <strong>Lower-layer Super Output Areas (LSOAs)</strong>. Every LSOA is ranked from <strong>1</strong> (most deprived) to <strong>32,844</strong> (least deprived).</p>
 
-      <p>The Index of Multiple Deprivation ranks every small area, called lower-layer super output areas (LSOA), in
-        England from 1 (most deprived area) to 32,844 (least deprived area).</p>
-
-      <p>The IMD combines information from the seven domains to produce an overall relative measure of deprivation. The domains are combined using the following weights:</p>
+      <p>The overall IMD score combines seven domains using the following weights:</p>
 
       <ul>
-        <li>Income Deprivation (22.5%)</li>
-        <li>Employment Deprivation (22.5%)</li>
-        <li>Education, Skills and Training Deprivation (13.5%)</li>
-        <li>Health Deprivation and Disability (13.5%)</li>
+        <li>Income (22.5%)</li>
+        <li>Employment (22.5%)</li>
+        <li>Education, Skills and Training (13.5%)</li>
+        <li>Health deprivation and Disability (13.5%)</li>
         <li>Crime (9.3%)</li>
         <li>Barriers to Housing and Services (9.3%)</li>
-        <li>Living Environment Deprivation (9.3%)</li>
+        <li>Living Environment (9.3%)</li>
       </ul>
 
       <p>More details can be found on the government's <a href="https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025/english-indices-of-deprivation-2025-frequently-asked-questions">English indices of deprivation 2025: frequently asked questions</a> page.</p>
