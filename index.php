@@ -11,7 +11,7 @@ declare(strict_types=1);
 $current_year = (new DateTime('now', new DateTimeZone('Europe/London')))->format('Y');
 
 $postcodes_querystring_input = filter_input(INPUT_GET, 'p');
-$postcodes_querystring = $postcodes_querystring_input === false ? null : $postcodes_querystring_input;
+$postcodes_querystring = is_string($postcodes_querystring_input) ? $postcodes_querystring_input : null;
 
 // Get postcodes from the query string, sanitize the input and convert to an
 // array
