@@ -260,7 +260,7 @@ $showResults = !$postcodes_error && count($postcodes) > 0;
       <button type="submit">Search IMD</button>
     </form><br>
 
-    <?php if ($showResults) : ?>
+    <?php if ($showResults): ?>
       <table id="data">
         <tr>
           <th>Postcode</th>
@@ -268,23 +268,19 @@ $showResults = !$postcodes_error && count($postcodes) > 0;
           <th>IMD Rank</th>
           <th>IMD Decile</th>
         </tr>
-      <?php endif; ?>
+        <?php
+        $fields_to_output = ['postcode', 'lsoa_name_2021', 'imd_rank', 'imd_decile'];
 
-      <?php if ($showResults) {
-
-            $fields_to_output = ['postcode', 'lsoa_name_2021', 'imd_rank', 'imd_decile'];
-
-            if ($imd_data_count > 0) {
-                $out = '';
-                foreach ($imd_data as $row) {
-                    $out .= outputTableRow($row, $fields_to_output);
-                }
-                echo $out;
-                echo '</table>';
-            } else {
-                echo '<tr><td colspan="' . count($fields_to_output) . '">No results found.</td></tr></table>';
+        if ($imd_data_count > 0) {
+            foreach ($imd_data as $row) {
+                echo outputTableRow($row, $fields_to_output);
             }
-        } ?>
+        } else {
+            echo '<tr><td colspan="' . count($fields_to_output) . '">No results found.</td></tr>';
+        }
+        ?>
+      </table>
+    <?php endif; ?>
   </main>
 
   <footer>
