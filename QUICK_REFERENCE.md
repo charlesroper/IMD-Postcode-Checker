@@ -31,11 +31,11 @@ php scripts/clover-to-json.php coverage/clover.xml > coverage.json  # JSON for L
 ## Tested
 
 **Functions:**
-- `normalisePostcode()` — 22 tests (includes special UK formats)
-- `getPostcodesArray()` — 12 tests
-- `postcodePlaceholdersForSql()` — 6 tests
-- `postcodesForTextarea()` — 6 tests
-- `outputTableRow()` — 11 tests
+- `normalisePostcode()` – 22 tests (includes special UK formats)
+- `getPostcodesArray()` – 12 tests
+- `postcodePlaceholdersForSql()` – 6 tests
+- `postcodesForTextarea()` – 6 tests
+- `outputTableRow()` – 11 tests
 
 **Security:** SQL injection, XSS, input validation
 
@@ -43,11 +43,11 @@ php scripts/clover-to-json.php coverage/clover.xml > coverage.json  # JSON for L
 
 ## Key Files
 
-- `src/functions.php` — Core functions
-- `tests/` — All test files
-- `phpunit.xml` — Configuration
-- `TESTING.md` — Full documentation
-- `TEST_SUMMARY.md` — Implementation details
+- `src/functions.php` – Core functions
+- `tests/` – All test files
+- `phpunit.xml` – Configuration
+- `TESTING.md` – Full documentation
+- `TEST_SUMMARY.md` – Implementation details
 
 ## Install
 

@@ -1,6 +1,6 @@
 # Test Summary
 
-87 tests covering 242 assertions—all passing.
+87 tests covering 242 assertions – all passing.
 
 ## Results
 
@@ -13,28 +13,29 @@
 
 ## Coverage Reports
 
-- **HTML Report** — `coverage/index.html` (run `composer test-coverage`)
-- **JSON Report** — `coverage/coverage-summary.json` (see `scripts/README.md`)
+- **HTML Report** – `coverage/index.html` (run `composer test-coverage`)
+- **JSON Report** – `coverage/coverage-summary.json` (see `scripts/README.md`)
 
 ## Tests by Function
 
 ### Unit Tests (45)
 
-**NormalisePostcodeTest.php** (10) — Valid postcodes, case handling, space/special character removal, edge cases
 
-**GetPostcodesArrayTest.php** (12) — Array parsing, line ending variations (LF/CRLF/CR), normalization, large input
+**NormalisePostcodeTest.php** (10) – Valid postcodes, case handling, space/special character removal, edge cases
 
-**PostcodePlaceholdersForSqlTest.php** (6) — SQL placeholder generation, empty input, max postcodes (900)
+**GetPostcodesArrayTest.php** (12) – Array parsing, line ending variations (LF/CRLF/CR), normalization, large input
 
-**PostcodesForTextareaTest.php** (6) — Textarea output, normalization, mixed line endings
+**PostcodePlaceholdersForSqlTest.php** (6) – SQL placeholder generation, empty input, max postcodes (900)
 
-**OutputTableRowTest.php** (11) — HTML row generation, XSS prevention, field ordering, entity escaping
+**PostcodesForTextareaTest.php** (6) – Textarea output, normalization, mixed line endings
+
+**OutputTableRowTest.php** (11) – HTML row generation, XSS prevention, field ordering, entity escaping
 
 ### Integration Tests (18)
 
-**DatabaseOperationsTest.php** (8) — Query execution, decile filtering, parameter binding, empty results
+**DatabaseOperationsTest.php** (8) – Query execution, decile filtering, parameter binding, empty results
 
-**WorkflowTest.php** (10) — Single/multiple postcodes, max limits, empty input, result formatting, security
+**WorkflowTest.php** (10) – Single/multiple postcodes, max limits, empty input, result formatting, security
 
 ### Security Tests (24)
 

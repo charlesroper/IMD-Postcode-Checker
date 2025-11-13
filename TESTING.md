@@ -5,21 +5,21 @@ The test suite has 98 tests covering core functions, workflows, and security.
 ## Test Organization
 
 **Unit Tests** (`tests/Unit/`)
-- `NormalisePostcodeTest.php` — Standard postcode normalization
-- `PostcodeValidationTest.php` — Special UK formats (BFPO, overseas territories, Crown dependencies)
-- `GetPostcodesArrayTest.php` — Array processing
-- `PostcodePlaceholdersForSqlTest.php` — SQL placeholders
-- `PostcodesForTextareaTest.php` — Textarea formatting
-- `OutputTableRowTest.php` — HTML output
+- `NormalisePostcodeTest.php` – Standard postcode normalization
+- `PostcodeValidationTest.php` – Special UK formats (BFPO, overseas territories, Crown dependencies)
+- `GetPostcodesArrayTest.php` – Array processing
+- `PostcodePlaceholdersForSqlTest.php` – SQL placeholders
+- `PostcodesForTextareaTest.php` – Textarea formatting
+- `OutputTableRowTest.php` – HTML output
 
 **Integration Tests** (`tests/Integration/`)
-- `DatabaseOperationsTest.php` — Database queries (mocked)
-- `WorkflowTest.php` — End-to-end workflows
+- `DatabaseOperationsTest.php` – Database queries (mocked)
+- `WorkflowTest.php` – End-to-end workflows
 
 **Security Tests** (`tests/Security/`)
-- `SqlInjectionTest.php` — SQL injection prevention
-- `XssPreventionTest.php` — XSS prevention
-- `InputValidationTest.php` — Input validation
+- `SqlInjectionTest.php` – SQL injection prevention
+- `XssPreventionTest.php` – XSS prevention
+- `InputValidationTest.php` – Input validation
 
 ## Prerequisites
 
@@ -38,7 +38,7 @@ This installs PHPUnit and the autoloader.
 **For coverage reports**, install a driver:
 
 ```bash
-# PCOV (recommended—fast)
+# PCOV (recommended – fast)
 sudo apt-get install php8.4-pcov
 
 # OR Xdebug (slower, includes debugging)
@@ -97,11 +97,11 @@ See `scripts/README.md` for full documentation on the converter tool.
 
 The project maintains 60% statement coverage, which is appropriate for this codebase. The untested code falls into two categories:
 
-**HTTP input functions** - `getDecileInt()` and `decileForInput()` use `filter_input(INPUT_GET)`, which requires actual HTTP requests. These can't be unit tested without additional mocking infrastructure. They're covered by integration tests instead.
+**HTTP input functions** – `getDecileInt()` and `decileForInput()` use `filter_input(INPUT_GET)`, which requires actual HTTP requests. These can't be unit tested without additional mocking infrastructure. They're covered by integration tests instead.
 
-**Error handling paths** - A few error conditions in `getPostcodesArray()` remain untested (lines 38, 46). These handle edge cases like `preg_split()` failures.
+**Error handling paths** – A few error conditions in `getPostcodesArray()` remain untested (lines 38, 46). These handle edge cases like `preg_split()` failures.
 
-The core business logic—postcode normalization, array processing, SQL placeholder generation, and HTML output—has complete test coverage.
+The core business logic – postcode normalization, array processing, SQL placeholder generation, and HTML output – has complete test coverage.
 
 ### Improving Coverage
 
@@ -139,7 +139,7 @@ There was 1 failure:
 1) Tests\Unit\NormalisePostcodeTest::testNormaliseValidFullPostcode
 Failed asserting that two strings are equal.
 --- Expected
-+++ Actual
++ + Actual
 @@ @@
 -'SW1A 1AA'
 +'SW1A1AA'
@@ -180,16 +180,16 @@ Tests: 63, Assertions: 150, Failures: 1.
 - String manipulation
 - Edge case handling (empty, null, extreme values)
 
-✅ **Output Generation** — HTML generation, field ordering, missing fields
+✅ **Output Generation** – HTML generation, field ordering, missing fields
 
-✅ **Workflows** — Single/multiple postcodes, limits, error conditions
+✅ **Workflows** – Single/multiple postcodes, limits, error conditions
 
 ### Not Tested
 
-❌ **Browser/UI** — Backend function tests only
-❌ **Real Database** — Database tests use mocks
-❌ **HTTP Input** — `filter_input()` requires actual requests
-❌ **Full Flow** — Complete index.php with real database
+❌ **Browser/UI** – Backend function tests only
+❌ **Real Database** – Database tests use mocks
+❌ **HTTP Input** – `filter_input()` requires actual requests
+❌ **Full Flow** – Complete index.php with real database
 
 ## Adding Tests
 
@@ -270,22 +270,22 @@ jobs:
 
 ## Troubleshooting
 
-**"Class not found" errors** — Run `composer install` to set up the autoloader.
+**"Class not found" errors** – Run `composer install` to set up the autoloader.
 
-**"filter_input() returns null"** — Functions using `filter_input(INPUT_GET)` require actual HTTP requests. Unit tests can't fully test these without additional mocking infrastructure.
+**"filter_input() returns null"** – Functions using `filter_input(INPUT_GET)` require actual HTTP requests. Unit tests can't fully test these without additional mocking infrastructure.
 
-**Memory errors** — Increase the limit:
+**Memory errors** – Increase the limit:
 ```bash
 php -d memory_limit=512M vendor/bin/phpunit
 ```
 
 ## Best Practices
 
-1. Run tests before committing—catch issues early
-2. Add tests when fixing bugs—prevent regression
-3. Keep unit tests fast—milliseconds, not seconds
-4. Test edge cases—empty inputs, maximums, special characters
-5. Test security—verify XSS and SQL injection prevention
+1. Run tests before committing – catch issues early
+2. Add tests when fixing bugs – prevent regression
+3. Keep unit tests fast – milliseconds, not seconds
+4. Test edge cases – empty inputs, maximums, special characters
+5. Test security – verify XSS and SQL injection prevention
 
 ## Resources
 

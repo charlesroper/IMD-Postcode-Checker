@@ -67,13 +67,13 @@ php scripts/clover-to-json.php coverage/clover.xml > coverage/coverage-summary.j
 ```
 
 Documentation:
-- [TESTING.md](TESTING.md) — Full testing guide
-- [TEST_SUMMARY.md](TEST_SUMMARY.md) — Test details
-- [scripts/README.md](scripts/README.md) — Coverage converter
+- [TESTING.md](TESTING.md) – Full testing guide
+- [TEST_SUMMARY.md](TEST_SUMMARY.md) – Test details
+- [scripts/README.md](scripts/README.md) – Coverage converter
 
 ## Technical Stack
 
-No runtime dependencies—just PHP and SQLite:
+No runtime dependencies – just PHP and SQLite:
 
 - Two PHP files: `index.php` and `src/functions.php`
 - One stylesheet: `style.css`
