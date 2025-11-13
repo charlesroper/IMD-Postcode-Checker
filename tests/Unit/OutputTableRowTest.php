@@ -39,7 +39,7 @@ class OutputTableRowTest extends TestCase
         $this->assertStringContainsString('<td></td>', $result);
     }
 
-    public function testEscapesHTMLEntities(): void
+    public function testEscapesHtmlEntities(): void
     {
         $row = ['postcode' => 'SW1A<script>alert("XSS")</script> 1AA'];
         $fields = ['postcode'];
@@ -98,7 +98,7 @@ class OutputTableRowTest extends TestCase
         $this->assertStringContainsString('<td>7</td>', $result);
     }
 
-    public function testPreventsXSSWithVariousAttacks(): void
+    public function testPreventsXssWithVariousAttacks(): void
     {
         $xssAttempts = [
             '<img src=x onerror=alert(1)>',

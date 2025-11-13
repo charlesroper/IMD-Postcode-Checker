@@ -103,7 +103,7 @@ class XssPreventionTest extends TestCase
         $this->assertStringNotContainsString('&amp;amp;', $result);
     }
 
-    public function testOutputTableRowHandlesComplexXSSPayload(): void
+    public function testOutputTableRowHandlesComplexXssPayload(): void
     {
         $complexPayload = '"><img src=x onerror=alert(document.cookie)>';
         $row = ['field' => $complexPayload];
@@ -117,7 +117,7 @@ class XssPreventionTest extends TestCase
         // The string "onerror=" may remain but it's harmless since < > are escaped
     }
 
-    public function testNormalisePostcodeDoesNotIntroduceXSS(): void
+    public function testNormalisePostcodeDoesNotIntroduceXss(): void
     {
         $xssAttempts = [
             '<script>alert(1)</script>',

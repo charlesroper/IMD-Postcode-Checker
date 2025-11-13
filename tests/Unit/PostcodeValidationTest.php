@@ -39,7 +39,7 @@ class PostcodeValidationTest extends TestCase
      * BFPO (British Forces Post Office) postcodes for military addresses.
      * Format: BFPO followed by 1-4 digits, no inward code.
      */
-    public function testNormaliseBFPOPostcodes(): void
+    public function testNormaliseBfpoPostcodes(): void
     {
         // BFPO postcodes are special - they don't follow standard format
         $this->assertEquals('BFPO 1', normalisePostcode('BFPO 1'));
