@@ -1,11 +1,12 @@
 # Testing Guide
 
-The test suite has 87 tests covering individual functions, workflows, and security.
+The test suite has 98 tests covering core functions, workflows, and security.
 
 ## Test Organization
 
 **Unit Tests** (`tests/Unit/`)
-- `NormalisePostcodeTest.php` — Postcode normalization
+- `NormalisePostcodeTest.php` — Standard postcode normalization
+- `PostcodeValidationTest.php` — Special UK formats (BFPO, overseas territories, Crown dependencies)
 - `GetPostcodesArrayTest.php` — Array processing
 - `PostcodePlaceholdersForSqlTest.php` — SQL placeholders
 - `PostcodesForTextareaTest.php` — Textarea formatting
@@ -154,6 +155,8 @@ Tests: 63, Assertions: 150, Failures: 1.
 ✅ **Input Sanitization**
 
 - Postcode normalization (uppercase, spacing, special character removal)
+- Special UK formats (BFPO, GIR 0AA, overseas territories, Crown dependencies)
+- Pattern validation (6 standard formats: A9 9AA through AA99 9AA)
 - Line splitting (LF, CRLF, CR handling)
 - Empty input handling
 - Unicode and special character handling
