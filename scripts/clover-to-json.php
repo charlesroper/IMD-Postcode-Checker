@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // Usage:
@@ -11,8 +12,14 @@ $path = $argv[1] ?? 'coverage/clover.xml';
 $top = 0;
 $minPercent = 0.0;
 for ($i = 2; $i < count($argv); $i++) {
-    if ($argv[$i] === '--top' && isset($argv[$i+1])) { $top = (int)$argv[++$i]; continue; }
-    if ($argv[$i] === '--min-percent' && isset($argv[$i+1])) { $minPercent = (float)$argv[++$i]; continue; }
+    if ($argv[$i] === '--top' && isset($argv[$i + 1])) {
+        $top = (int)$argv[++$i];
+        continue;
+    }
+    if ($argv[$i] === '--min-percent' && isset($argv[$i + 1])) {
+        $minPercent = (float)$argv[++$i];
+        continue;
+    }
 }
 
 if (!is_readable($path)) {
@@ -57,7 +64,7 @@ foreach ($files as $file) {
         $covered = intval($a['coveredstatements'] ?? ($a['coveredelements'] ?? 0));
     }
     $percent = $statements > 0 ? round(($covered / $statements) * 100, 2) : null;
-    
+
     // Collect uncovered lines
     $uncoveredLines = [];
     $lines = $file->xpath('.//line[@type="stmt" and @count="0"]');
@@ -68,7 +75,7 @@ foreach ($files as $file) {
         }
     }
     sort($uncoveredLines);
-    
+
     $summary['files'][] = [
         'file' => $name,
         'statements' => $statements,
