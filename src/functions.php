@@ -28,16 +28,16 @@ function normalisePostcode(string $postcode): string
 function getPostcodesArray(?string $postcodes_querystring): array
 {
     // If the input is empty, return an empty array.
-    if ($postcodes_querystring === null || $postcodes_querystring === '') {
-        return array();
+    if (!$postcodes_querystring) {
+        return [];
     }
 
     // Use a regex to split on the CR+LF or just CR or just LF.
     $rows = preg_split('/\r\n|\r|\n/', $postcodes_querystring);
     if ($rows === false) {
-        return array();
+        return [];
     }
-    $postcodes = array();
+    $postcodes = [];
 
     // Normalise the postcode in each row and add non-empty results to the
     // array.
@@ -78,7 +78,7 @@ function getDecileInt(): int
 
 /**
  * Generate a comma-separated string of placeholders for use in a SQL IN() clause.
- * For example, if there are 3 postcodes, this returns "?, ?, ?"
+ * For example, if there are 3 postcodes, this returns "?,?,?"
  * These placeholders will be bound to actual postcode values in a prepared statement.
  *
  * @param string|null $postcodes_querystring The raw postcode input
@@ -115,13 +115,14 @@ function postcodesForTextarea(?string $postcodes_querystring): string
 /**
  * Get either the current decile value from the query string, or an empty
  * string. This is used to populate the decile input field.
+ * Returns empty string when parameter is absent; returns validated decile (1-10) when present.
  *
  * @return string The decile as a string, or empty string
  */
 function decileForInput(): string
 {
-    $rawDecile = filter_input(INPUT_GET, 'd', FILTER_DEFAULT);
-    if ($rawDecile === null || $rawDecile === false || $rawDecile === '') {
+    // Check if the parameter exists to avoid unnecessary filtering
+    if (!filter_has_var(INPUT_GET, 'd')) {
         return '';
     }
 
