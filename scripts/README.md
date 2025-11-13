@@ -1,10 +1,6 @@
 # Coverage Converter
 
-The `clover-to-json.php` script converts PHPUnit's Clover XML coverage report into compact JSON.
-
-## Why Use This
-
-PHPUnit generates verbose XML reports. LLMs work better with clean JSON that shows what matters: coverage percentages and untested lines.
+Converts PHPUnit's Clover XML coverage report into compact JSON for LLM analysis.
 
 ## Basic Usage
 
@@ -15,13 +11,12 @@ vendor/bin/phpunit --coverage-clover=coverage/clover.xml --coverage-filter src
 php scripts/clover-to-json.php coverage/clover.xml > coverage/coverage-summary.json
 ```
 
-## Output Format
+## Output
 
-The JSON contains three sections:
-
-- `generated` - Unix timestamp from the coverage run
-- `totals` - Project-wide coverage statistics
-- `files` - Per-file breakdown with uncovered line numbers
+JSON with three sections:
+- `generated` — Unix timestamp
+- `totals` — Project-wide coverage
+- `files` — Per-file breakdown with uncovered line numbers
 
 Example:
 
@@ -45,22 +40,19 @@ Example:
 }
 ```
 
-## Filtering Results
+## Filter Results
 
-Show only files below 80% coverage:
-
+Show files below 80% coverage:
 ```bash
 php scripts/clover-to-json.php coverage/clover.xml --min-percent 80
 ```
 
-Show the five files with lowest coverage:
-
+Show the 5 lowest-coverage files:
 ```bash
 php scripts/clover-to-json.php coverage/clover.xml --top 5
 ```
 
-Combine both filters:
-
+Combine filters:
 ```bash
 php scripts/clover-to-json.php coverage/clover.xml --top 10 --min-percent 90
 ```
