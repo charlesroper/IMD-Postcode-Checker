@@ -19,9 +19,9 @@ imd/
 │       ├── XssPreventionTest.php
 │       └── InputValidationTest.php
 ├── db/
-│   └── imd25.sqlite3             # Database (extract from .7z)
+│   └── imd25.sqlite3              # Database (extract from .7z)
 ├── vendor/                        # Composer dependencies (gitignored)
-├── .phpunit.cache/               # PHPUnit cache (gitignored)
+├── .phpunit.cache/                # PHPUnit cache (gitignored)
 ├── composer.json                  # PHP dependencies configuration
 ├── composer.lock                  # Locked dependency versions (gitignored)
 ├── phpunit.xml                    # PHPUnit configuration
@@ -29,8 +29,8 @@ imd/
 ├── style.css                      # Styles
 ├── README.md                      # Project documentation
 ├── TESTING.md                     # Testing guide
-├── TEST_SUMMARY.md               # Test implementation summary
-└── .gitignore                    # Git ignore rules
+├── TEST_SUMMARY.md                # Test implementation summary
+└── .gitignore                     # Git ignore rules
 ```
 
 ## Quick Reference
@@ -38,8 +38,8 @@ imd/
 ### Running Tests
 
 ```bash
-composer test                          # All tests
-vendor/bin/phpunit --testsuite Unit   # Unit tests only
+composer test                           # All tests
+vendor/bin/phpunit --testsuite Unit     # Unit tests only
 vendor/bin/phpunit --testsuite Security # Security tests only
 ```
 
