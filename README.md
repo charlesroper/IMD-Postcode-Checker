@@ -21,6 +21,20 @@ The IMD combines seven domains using these weights:
 
 For more details, see the [English indices of deprivation 2025 FAQ](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025/english-indices-of-deprivation-2025-frequently-asked-questions).
 
+## Postcode Support
+
+The tool handles all UK postcode formats:
+
+**Standard formats:** A9 9AA, A9A 9AA, A99 9AA, AA9 9AA, AA9A 9AA, AA99 9AA
+
+**Special cases:**
+- BFPO postcodes (British Forces Post Office)
+- GIR 0AA (historic Girobank code)
+- Overseas territories (Ascension Island, Falklands, Gibraltar, etc.)
+- Crown dependencies (Guernsey, Jersey, Isle of Man)
+
+All postcodes are validated and normalized to proper UK format.
+
 ## Data used in this tool
 
 - [English Index of Multiple Deprivation 2025](https://deprivation.communities.gov.uk/download-all)
@@ -38,7 +52,7 @@ The project is simple PHP and a SQLite database (distributed as a 7zip archive).
 
 ## Testing
 
-The project includes 87 comprehensive tests covering functions, security, and edge cases.
+The project includes 98 tests covering core functions, security, and special UK postcode formats.
 
 ```bash
 composer install

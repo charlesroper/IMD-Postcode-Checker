@@ -10,6 +10,7 @@ imd/
 ├── tests/
 │   ├── Unit/                      # Unit tests for individual functions
 │   │   ├── NormalisePostcodeTest.php
+│   │   ├── PostcodeValidationTest.php
 │   │   ├── GetPostcodesArrayTest.php
 │   │   ├── PostcodePlaceholdersForSqlTest.php
 │   │   ├── PostcodesForTextareaTest.php
