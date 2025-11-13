@@ -35,6 +35,7 @@ Tests for security vulnerabilities:
 
 - PHP 8.0 or higher
 - Composer
+- PCOV or Xdebug (for code coverage)
 
 ## Installation
 
@@ -45,6 +46,18 @@ composer install
 ```
 
 This will install PHPUnit and set up the autoloader.
+
+2. Install a coverage driver (optional, needed for `composer test-coverage`):
+
+```bash
+# PCOV (recommended - fast, coverage-only)
+sudo apt-get install php8.4-pcov
+
+# OR Xdebug (slower, includes debugging features)
+sudo apt-get install php8.4-xdebug
+```
+
+Without a coverage driver, tests run normally but coverage reports can't be generated.
 
 ## Running Tests
 
@@ -94,6 +107,8 @@ vendor/bin/phpunit --filter testNormaliseValidFullPostcode
 
 ## Code Coverage
 
+### HTML Coverage Report
+
 Generate HTML code coverage report:
 
 ```bash
@@ -101,6 +116,48 @@ composer test-coverage
 ```
 
 Coverage report will be generated in the `coverage/` directory. Open `coverage/index.html` in your browser.
+
+### JSON Coverage Report (for LLMs)
+
+Generate a compact JSON summary with uncovered line numbers:
+
+```bash
+vendor/bin/phpunit --coverage-clover=coverage/clover.xml --coverage-filter src
+php scripts/clover-to-json.php coverage/clover.xml > coverage/coverage-summary.json
+```
+
+This produces a lightweight report perfect for LLM analysis. The JSON includes:
+- Overall coverage percentages
+- Per-file coverage statistics
+- Specific line numbers of untested code
+
+Filter to show only files below 80% coverage:
+
+```bash
+php scripts/clover-to-json.php coverage/clover.xml --min-percent 80
+```
+
+See `scripts/README.md` for full documentation on the converter tool.
+
+### Current Coverage: 60%
+
+The project maintains 60% statement coverage, which is appropriate for this codebase. The untested code falls into two categories:
+
+**HTTP input functions** - `getDecileInt()` and `decileForInput()` use `filter_input(INPUT_GET)`, which requires actual HTTP requests. These can't be unit tested without additional mocking infrastructure. They're covered by integration tests instead.
+
+**Error handling paths** - A few error conditions in `getPostcodesArray()` remain untested (lines 38, 46). These handle edge cases like `preg_split()` failures.
+
+The core business logic—postcode normalization, array processing, SQL placeholder generation, and HTML output—has complete test coverage.
+
+### Improving Coverage
+
+To push coverage higher:
+
+1. Test the `preg_split()` error path (line 38) by passing malformed regex patterns
+2. Add integration tests that simulate GET parameters for the HTTP input functions
+3. Test non-string elements in the postcode array (line 46)
+
+These additions would increase coverage to near 100%, though the return on effort diminishes quickly beyond testing the core paths.
 
 ## Understanding Test Results
 
