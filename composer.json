@@ -20,6 +20,9 @@
     },
     "scripts": {
         "test": "phpunit",
-        "test-coverage": "@putenv XDEBUG_MODE=coverage && phpunit --coverage-html coverage --coverage-filter src"
+        "test-coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --coverage-html coverage --coverage-filter src"
+        ]
     }
 }
