@@ -1,0 +1,25 @@
+{
+    "name": "charlesroper/imd-postcode-checker",
+    "description": "English IMD 2025 Postcode Checker",
+    "type": "project",
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "@putenv XDEBUG_MODE=coverage && phpunit --coverage-html coverage --coverage-filter src"
+    }
+}

@@ -50,7 +50,38 @@ This project is a dead simple single file PHP script plus a SQLite database. The
 
 Note: you might need to [install PHP](https://www.php.net/manual/en/install.php) locally first. If you get errors, check your `php.ini` file and make sure `extension=pdo_sqlite` is enabled.
 
+## Testing
+
+This project includes a comprehensive test suite covering all core functionality, security vulnerabilities, and edge cases.
+
+**Quick start:**
+
+```bash
+composer install
+vendor/bin/phpunit
+```
+
+For detailed testing documentation, see:
+
+- [TESTING.md](TESTING.md) - Complete testing guide
+- [TEST_SUMMARY.md](TEST_SUMMARY.md) - Test implementation details
+- [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Quick reference card
+
+**Test coverage:**
+
+- ✅ Unit tests (45 tests) - Individual function testing
+- ✅ Integration tests (18 tests) - Workflow and database operations
+- ✅ Security tests (24 tests) - SQL injection and XSS prevention
+
 ## Technical notes
 
-The tool is a single PHP file, a stylesheet and a SQLite database containing
-some stripped-back IMD data.
+This tool is intentionally minimal and has no runtime dependencies:
+
+- Two PHP files: `index.php` (UI + queries) and `src/functions.php` (shared functions)
+- One stylesheet: `style.css`
+- One SQLite database: `db/imd25.sqlite3`
+
+Production requirements:
+
+- PHP 8.0+ with `pdo_sqlite` and `sqlite3` extensions enabled
+- No Composer/vendor needed in production (Composer is only used locally for tests)
