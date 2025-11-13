@@ -24,21 +24,21 @@ class GetPostcodesArrayTest extends TestCase
         $this->assertEquals(['SW1A 1AA'], $result);
     }
 
-    public function testMultiplePostcodesWithLF(): void
+    public function testMultiplePostcodesWithLf(): void
     {
         $input = "SW1A 1AA\nM1 1AE\nB33 8TH";
         $expected = ['SW1A 1AA', 'M1 1AE', 'B33 8TH'];
         $this->assertEquals($expected, getPostcodesArray($input));
     }
 
-    public function testMultiplePostcodesWithCRLF(): void
+    public function testMultiplePostcodesWithCrlf(): void
     {
         $input = "SW1A 1AA\r\nM1 1AE\r\nB33 8TH";
         $expected = ['SW1A 1AA', 'M1 1AE', 'B33 8TH'];
         $this->assertEquals($expected, getPostcodesArray($input));
     }
 
-    public function testMultiplePostcodesWithCR(): void
+    public function testMultiplePostcodesWithCr(): void
     {
         $input = "SW1A 1AA\rM1 1AE\rB33 8TH";
         $expected = ['SW1A 1AA', 'M1 1AE', 'B33 8TH'];

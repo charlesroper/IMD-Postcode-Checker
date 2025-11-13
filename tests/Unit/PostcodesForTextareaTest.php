@@ -19,7 +19,7 @@ class PostcodesForTextareaTest extends TestCase
         $this->assertEquals('SW1A 1AA', postcodesForTextarea('SW1A 1AA'));
     }
 
-    public function testMultiplePostcodesJoinedWithPHPEOL(): void
+    public function testMultiplePostcodesJoinedWithPhpEol(): void
     {
         $input = "SW1A 1AA\nM1 1AE\nB33 8TH";
         $expected = 'SW1A 1AA' . PHP_EOL . 'M1 1AE' . PHP_EOL . 'B33 8TH';

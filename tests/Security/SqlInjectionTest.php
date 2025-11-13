@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class SqlInjectionTest extends TestCase
 {
-    public function testPostcodePlaceholdersDoesNotExecuteSQL(): void
+    public function testPostcodePlaceholdersDoesNotExecuteSql(): void
     {
         // Attempt SQL injection through postcode input
         $maliciousInputs = [
@@ -28,7 +28,7 @@ class SqlInjectionTest extends TestCase
         }
     }
 
-    public function testNormalisePostcodeRemovesSQLKeywords(): void
+    public function testNormalisePostcodeRemovesSqlKeywords(): void
     {
         $maliciousInputs = [
             "SW1A'OR'1'='1",
