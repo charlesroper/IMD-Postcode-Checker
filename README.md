@@ -27,7 +27,7 @@ For more details, see the [English indices of deprivation 2025 FAQ](https://www.
 
 ## Local Development
 
-The project is a single PHP file plus a SQLite database (distributed as a 7zip file).
+The project is simple PHP and a SQLite database (distributed as a 7zip archive).
 
 1. Clone the repository
 2. Extract `db/imd25.sqlite3` from `db/imd25.sqlite3.7z`
@@ -48,7 +48,7 @@ vendor/bin/phpunit
 For coverage reports:
 
 ```bash
-composer test-coverage              # HTML report at coverage/index.html
+composer test-coverage  # HTML report at coverage/index.html
 php scripts/clover-to-json.php coverage/clover.xml > coverage/coverage-summary.json  # JSON for LLMs
 ```
 
