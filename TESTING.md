@@ -1,108 +1,61 @@
-# Testing Guide for IMD Postcode Checker
+# Testing Guide
 
-This project includes a comprehensive test suite to ensure code quality, security, and reliability.
+The test suite has 87 tests covering individual functions, workflows, and security.
 
-## Test Structure
+## Test Organization
 
-The test suite is organized into three main categories:
+**Unit Tests** (`tests/Unit/`)
+- `NormalisePostcodeTest.php` — Postcode normalization
+- `GetPostcodesArrayTest.php` — Array processing
+- `PostcodePlaceholdersForSqlTest.php` — SQL placeholders
+- `PostcodesForTextareaTest.php` — Textarea formatting
+- `OutputTableRowTest.php` — HTML output
 
-### Unit Tests (`tests/Unit/`)
+**Integration Tests** (`tests/Integration/`)
+- `DatabaseOperationsTest.php` — Database queries (mocked)
+- `WorkflowTest.php` — End-to-end workflows
 
-Tests for individual functions in isolation:
-
-- **NormalisePostcodeTest.php** - Postcode normalization and sanitization
-- **GetPostcodesArrayTest.php** - Array processing and line splitting
-- **PostcodePlaceholdersForSqlTest.php** - SQL placeholder generation
-- **PostcodesForTextareaTest.php** - Textarea output formatting
-- **OutputTableRowTest.php** - HTML table row generation
-
-### Integration Tests (`tests/Integration/`)
-
-Tests for component interactions and workflows:
-
-- **DatabaseOperationsTest.php** - Database queries with mocked PDO
-- **WorkflowTest.php** - End-to-end user workflows
-
-### Security Tests (`tests/Security/`)
-
-Tests for security vulnerabilities:
-
-- **SqlInjectionTest.php** - SQL injection prevention
-- **XssPreventionTest.php** - Cross-site scripting (XSS) prevention
-- **InputValidationTest.php** - Input validation and edge cases
+**Security Tests** (`tests/Security/`)
+- `SqlInjectionTest.php` — SQL injection prevention
+- `XssPreventionTest.php` — XSS prevention
+- `InputValidationTest.php` — Input validation
 
 ## Prerequisites
 
-- PHP 8.0 or higher
+- PHP 8.0+
 - Composer
-- PCOV or Xdebug (for code coverage)
+- PCOV or Xdebug (optional, for coverage reports)
 
 ## Installation
-
-1. Install dependencies:
 
 ```bash
 composer install
 ```
 
-This will install PHPUnit and set up the autoloader.
+This installs PHPUnit and the autoloader.
 
-2. Install a coverage driver (optional, needed for `composer test-coverage`):
+**For coverage reports**, install a driver:
 
 ```bash
-# PCOV (recommended - fast, coverage-only)
+# PCOV (recommended—fast)
 sudo apt-get install php8.4-pcov
 
-# OR Xdebug (slower, includes debugging features)
+# OR Xdebug (slower, includes debugging)
 sudo apt-get install php8.4-xdebug
 ```
 
-Without a coverage driver, tests run normally but coverage reports can't be generated.
+Without a driver, tests run but coverage reports won't be generated.
 
 ## Running Tests
 
-### Run All Tests
-
 ```bash
-composer test
-```
-
-Or directly with PHPUnit:
-
-```bash
-vendor/bin/phpunit
-```
-
-### Run Specific Test Suites
-
-**Unit tests only:**
-
-```bash
-vendor/bin/phpunit --testsuite Unit
-```
-
-**Integration tests only:**
-
-```bash
-vendor/bin/phpunit --testsuite Integration
-```
-
-**Security tests only:**
-
-```bash
-vendor/bin/phpunit --testsuite Security
-```
-
-### Run a Specific Test File
-
-```bash
-vendor/bin/phpunit tests/Unit/NormalisePostcodeTest.php
-```
-
-### Run a Specific Test Method
-
-```bash
-vendor/bin/phpunit --filter testNormaliseValidFullPostcode
+composer test                               # All tests
+vendor/bin/phpunit                          # All tests (direct)
+vendor/bin/phpunit --testsuite Unit         # Unit only
+vendor/bin/phpunit --testsuite Integration  # Integration only
+vendor/bin/phpunit --testsuite Security     # Security only
+vendor/bin/phpunit tests/Unit/NormalisePostcodeTest.php  # Single file
+vendor/bin/phpunit --filter testNormaliseValidFullPostcode  # Single test
 ```
 
 ## Code Coverage
@@ -224,29 +177,20 @@ Tests: 63, Assertions: 150, Failures: 1.
 - String manipulation
 - Edge case handling (empty, null, extreme values)
 
-✅ **Output Generation**
+✅ **Output Generation** — HTML generation, field ordering, missing fields
 
-- Table row HTML generation
-- Field ordering
-- Missing field handling
+✅ **Workflows** — Single/multiple postcodes, limits, error conditions
 
-✅ **Workflows**
+### Not Tested
 
-- Single and multiple postcode processing
-- Maximum limit handling (900 postcodes)
-- Error conditions
-- Real-world input scenarios
+❌ **Browser/UI** — Backend function tests only
+❌ **Real Database** — Database tests use mocks
+❌ **HTTP Input** — `filter_input()` requires actual requests
+❌ **Full Flow** — Complete index.php with real database
 
-### What is NOT Tested
+## Adding Tests
 
-❌ **Browser/UI Testing** - These are backend function tests only
-❌ **Actual Database Operations** - Database tests use mocks
-❌ **GET Parameter Processing** - `filter_input()` requires actual HTTP requests
-❌ **Full Integration** - The complete index.php flow with real database
-
-## Adding New Tests
-
-### 1. Create a new test file
+Create a test file:
 
 ```php
 <?php
@@ -267,44 +211,39 @@ class MyNewTest extends TestCase
 }
 ```
 
-### 2. Common Assertions
+Common assertions:
 
 ```php
 // Equality
 $this->assertEquals($expected, $actual);
-$this->assertSame($expected, $actual); // Strict comparison
+$this->assertSame($expected, $actual);  // Strict
 
 // Types
 $this->assertIsString($value);
 $this->assertIsArray($value);
-$this->assertIsInt($value);
 
 // Arrays
 $this->assertCount(3, $array);
 $this->assertEmpty($array);
-$this->assertArrayHasKey('key', $array);
 
 // Strings
 $this->assertStringContainsString('needle', 'haystack');
 $this->assertStringStartsWith('prefix', 'prefixAndMore');
-$this->assertMatchesRegularExpression('/pattern/', 'string');
 
 // Booleans
 $this->assertTrue($condition);
 $this->assertFalse($condition);
 ```
 
-### 3. Run your new tests
+Run tests:
 
 ```bash
 vendor/bin/phpunit tests/Unit/MyNewTest.php
 ```
 
-## Continuous Integration
+## CI/CD
 
-These tests can be integrated into CI/CD pipelines:
-
-### GitHub Actions Example
+Example GitHub Actions workflow:
 
 ```yaml
 name: Tests
@@ -314,49 +253,38 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v2
-    
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.0'
-    
     - name: Install dependencies
       run: composer install
-    
     - name: Run tests
       run: composer test
 ```
 
 ## Troubleshooting
 
-### "Class not found" errors
+**"Class not found" errors** — Run `composer install` to set up the autoloader.
 
-Make sure you've run `composer install` to set up the autoloader.
+**"filter_input() returns null"** — Functions using `filter_input(INPUT_GET)` require actual HTTP requests. Unit tests can't fully test these without additional mocking infrastructure.
 
-### "filter_input() returns null" in tests
-
-The `getDecileInt()` and `decileForInput()` functions use `filter_input()` which requires actual HTTP requests. These functions can't be fully unit tested without additional mocking infrastructure.
-
-### Memory limit errors with large tests
-
-Increase PHP memory limit:
-
+**Memory errors** — Increase the limit:
 ```bash
 php -d memory_limit=512M vendor/bin/phpunit
 ```
 
 ## Best Practices
 
-1. **Run tests before committing** - Catch issues early
-2. **Write tests for bugs** - When you fix a bug, add a test to prevent regression
-3. **Keep tests fast** - Unit tests should run in milliseconds
-4. **Test edge cases** - Empty inputs, maximum values, special characters
-5. **Test security** - Always verify XSS and SQL injection prevention
+1. Run tests before committing—catch issues early
+2. Add tests when fixing bugs—prevent regression
+3. Keep unit tests fast—milliseconds, not seconds
+4. Test edge cases—empty inputs, maximums, special characters
+5. Test security—verify XSS and SQL injection prevention
 
-## Further Reading
+## Resources
 
 - [PHPUnit Documentation](https://phpunit.de/documentation.html)
 - [Testing Best Practices](https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html)
