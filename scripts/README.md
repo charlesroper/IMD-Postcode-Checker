@@ -14,9 +14,9 @@ php scripts/clover-to-json.php coverage/clover.xml > coverage/coverage-summary.j
 ## Output
 
 JSON with three sections:
-- `generated` — Unix timestamp
-- `totals` — Project-wide coverage
-- `files` — Per-file breakdown with uncovered line numbers
+- `generated` – Unix timestamp
+- `totals` – Project-wide coverage
+- `files` – Per-file breakdown with uncovered line numbers
 
 Example:
 
