@@ -13,11 +13,11 @@ $top = 0;
 $minPercent = 0.0;
 for ($i = 2; $i < count($argv); $i++) {
     if ($argv[$i] === '--top' && isset($argv[$i + 1])) {
-        $top = (int)$argv[++$i];
+        $top = (int) $argv[++$i];
         continue;
     }
     if ($argv[$i] === '--min-percent' && isset($argv[$i + 1])) {
-        $minPercent = (float)$argv[++$i];
+        $minPercent = (float) $argv[++$i];
         continue;
     }
 }
@@ -34,7 +34,7 @@ if ($xml === false) {
 }
 
 $summary = [
-    'generated' => isset($xml['generated']) ? (string)$xml['generated'] : null,
+    'generated' => isset($xml['generated']) ? (string) $xml['generated'] : null,
     'totals' => null,
     'files' => [],
 ];
@@ -43,7 +43,7 @@ $projMetrics = $xml->project->metrics ?? null;
 if ($projMetrics) {
     $a = $projMetrics->attributes();
     $statements = intval($a['statements'] ?? 0);
-    $covered = intval($a['coveredstatements'] ?? ($a['coveredelements'] ?? 0));
+    $covered = intval($a['coveredstatements'] ?? $a['coveredelements'] ?? 0);
     $summary['totals'] = [
         'statements' => $statements,
         'covered_statements' => $covered,
@@ -54,14 +54,14 @@ if ($projMetrics) {
 // Collect file metrics and uncovered lines
 $files = $xml->xpath('//file');
 foreach ($files as $file) {
-    $name = (string)$file['name'];
+    $name = (string) $file['name'];
     $m = $file->metrics ?? null;
     $statements = 0;
     $covered = 0;
     if ($m) {
         $a = $m->attributes();
         $statements = intval($a['statements'] ?? 0);
-        $covered = intval($a['coveredstatements'] ?? ($a['coveredelements'] ?? 0));
+        $covered = intval($a['coveredstatements'] ?? $a['coveredelements'] ?? 0);
     }
     $percent = $statements > 0 ? round(($covered / $statements) * 100, 2) : null;
 
@@ -69,7 +69,7 @@ foreach ($files as $file) {
     $uncoveredLines = [];
     $lines = $file->xpath('.//line[@type="stmt" and @count="0"]');
     foreach ($lines as $line) {
-        $lineNum = (int)$line['num'];
+        $lineNum = (int) $line['num'];
         if ($lineNum > 0) {
             $uncoveredLines[] = $lineNum;
         }
@@ -89,9 +89,12 @@ foreach ($files as $file) {
 usort($summary['files'], static function ($a, $b) {
     $pa = $a['coverage_percent'] ?? -1;
     $pb = $b['coverage_percent'] ?? -1;
-    if ($pa === $pb) return 0;
-    if ($pa === null) return 1;
-    if ($pb === null) return -1;
+    if ($pa === $pb)
+        return 0;
+    if ($pa === null)
+        return 1;
+    if ($pb === null)
+        return -1;
     return $pa < $pb ? -1 : 1;
 });
 

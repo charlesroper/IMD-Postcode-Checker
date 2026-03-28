@@ -5,6 +5,7 @@ The test suite has 98 tests covering core functions, workflows, and security.
 ## Test Organization
 
 **Unit Tests** (`tests/Unit/`)
+
 - `NormalisePostcodeTest.php` – Standard postcode normalization
 - `PostcodeValidationTest.php` – Special UK formats (BFPO, overseas territories, Crown dependencies)
 - `GetPostcodesArrayTest.php` – Array processing
@@ -13,10 +14,12 @@ The test suite has 98 tests covering core functions, workflows, and security.
 - `OutputTableRowTest.php` – HTML output
 
 **Integration Tests** (`tests/Integration/`)
+
 - `DatabaseOperationsTest.php` – Database queries (mocked)
 - `WorkflowTest.php` – End-to-end workflows
 
 **Security Tests** (`tests/Security/`)
+
 - `SqlInjectionTest.php` – SQL injection prevention
 - `XssPreventionTest.php` – XSS prevention
 - `InputValidationTest.php` – Input validation
@@ -81,6 +84,7 @@ php scripts/clover-to-json.php coverage/clover.xml > coverage/coverage-summary.j
 ```
 
 This produces a lightweight report perfect for LLM analysis. The JSON includes:
+
 - Overall coverage percentages
 - Per-file coverage statistics
 - Specific line numbers of untested code
@@ -257,15 +261,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.0'
-    - name: Install dependencies
-      run: composer install
-    - name: Run tests
-      run: composer test
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.0"
+      - name: Install dependencies
+        run: composer install
+      - name: Run tests
+        run: composer test
 ```
 
 ## Troubleshooting
@@ -275,6 +279,7 @@ jobs:
 **"filter_input() returns null"** – Functions using `filter_input(INPUT_GET)` require actual HTTP requests. Unit tests can't fully test these without additional mocking infrastructure.
 
 **Memory errors** – Increase the limit:
+
 ```bash
 php -d memory_limit=512M vendor/bin/phpunit
 ```

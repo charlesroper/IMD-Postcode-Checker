@@ -121,14 +121,14 @@ class WorkflowTest extends TestCase
                 'postcode' => 'SW1A 1AA',
                 'lsoa_name_2021' => 'Westminster 001A',
                 'imd_rank' => '15234',
-                'imd_decile' => '5'
+                'imd_decile' => '5',
             ],
             [
                 'postcode' => 'M1 1AE',
                 'lsoa_name_2021' => 'Manchester 001B',
                 'imd_rank' => '8901',
-                'imd_decile' => '3'
-            ]
+                'imd_decile' => '3',
+            ],
         ];
 
         $fields = ['postcode', 'lsoa_name_2021', 'imd_rank', 'imd_decile'];

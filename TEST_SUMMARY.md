@@ -4,12 +4,12 @@
 
 ## Results
 
-| Suite                 | Tests | Assertions | Status |
-| --------------------- | ----- | ---------- | ------ |
-| Unit Tests            | 45    | 89         | ✅     |
-| Integration Tests     | 18    | 45         | ✅     |
-| Security Tests        | 24    | 108        | ✅     |
-| **Total**             | **87**| **242**    | ✅     |
+| Suite             | Tests  | Assertions | Status |
+| ----------------- | ------ | ---------- | ------ |
+| Unit Tests        | 45     | 89         | ✅     |
+| Integration Tests | 18     | 45         | ✅     |
+| Security Tests    | 24     | 108        | ✅     |
+| **Total**         | **87** | **242**    | ✅     |
 
 ## Coverage Reports
 
@@ -19,7 +19,6 @@
 ## Tests by Function
 
 ### Unit Tests (45)
-
 
 **NormalisePostcodeTest.php** (10) – Valid postcodes, case handling, space/special character removal, edge cases
 

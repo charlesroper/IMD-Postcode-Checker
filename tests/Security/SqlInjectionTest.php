@@ -32,7 +32,7 @@ class SqlInjectionTest extends TestCase
     {
         $maliciousInputs = [
             "SW1A'OR'1'='1",
-            "DROP TABLE",
+            'DROP TABLE',
             "'; SELECT * FROM",
         ];
 
@@ -40,8 +40,8 @@ class SqlInjectionTest extends TestCase
             $result = normalisePostcode($input);
             // Since normalisePostcode strips non-alphanumeric, SQL keywords become harmless
             $this->assertStringNotContainsString("'", $result);
-            $this->assertStringNotContainsString(";", $result);
-            $this->assertStringNotContainsString("=", $result);
+            $this->assertStringNotContainsString(';', $result);
+            $this->assertStringNotContainsString('=', $result);
         }
     }
 
@@ -53,8 +53,8 @@ class SqlInjectionTest extends TestCase
         // Each postcode should be sanitized
         foreach ($result as $postcode) {
             $this->assertStringNotContainsString("'", $postcode);
-            $this->assertStringNotContainsString(";", $postcode);
-            $this->assertStringNotContainsString("-", $postcode);
+            $this->assertStringNotContainsString(';', $postcode);
+            $this->assertStringNotContainsString('-', $postcode);
         }
     }
 }

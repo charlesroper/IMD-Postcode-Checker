@@ -114,6 +114,7 @@ class XssPreventionTest extends TestCase
         $this->assertStringContainsString('&gt;', $result);
         // The critical security check: tags are escaped
         $this->assertStringNotContainsString('<img', $result);
+
         // The string "onerror=" may remain but it's harmless since < > are escaped
     }
 

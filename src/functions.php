@@ -58,7 +58,8 @@ function normalisePostcode(string $postcode): string
     // Inward code restrictions: C, I, K, M, O, V not used in first position
 
     // Standard format: capture outward and inward parts
-    $pattern = '/^'
+    $pattern =
+        '/^'
         . '([A-PR-UWYZ])' // First char: any letter except Q, V, X, Z
         . '([0-9]{1,2}|[A-HK-Y]?[0-9]{1,2})' // Second part: digit(s) or letter+digit(s)
         . '([A-Z]?)' // Optional letter (for A9A format)
@@ -122,18 +123,13 @@ function getPostcodesArray(?string $postcodes_querystring): array
  */
 function getDecileInt(): int
 {
-    return (int)filter_input(
-        INPUT_GET,
-        'd',
-        FILTER_VALIDATE_INT,
-        [
-            'options' => [
-                'default'   => 10,
-                'min_range' => 1,
-                'max_range' => 10,
-            ],
-        ]
-    );
+    return (int) filter_input(INPUT_GET, 'd', FILTER_VALIDATE_INT, [
+        'options' => [
+            'default' => 10,
+            'min_range' => 1,
+            'max_range' => 10,
+        ],
+    ]);
 }
 
 /**
@@ -186,7 +182,7 @@ function decileForInput(): string
         return '';
     }
 
-    return (string)getDecileInt();
+    return (string) getDecileInt();
 }
 
 /**
@@ -201,7 +197,7 @@ function outputTableRow(array $row, array $fields): string
     $out = '<tr>';
     foreach ($fields as $field) {
         $value = array_key_exists($field, $row) ? $row[$field] : '';
-        $safeValue = htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+        $safeValue = htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
         $out .= "<td>$safeValue</td>";
     }
     $out .= '</tr>';
