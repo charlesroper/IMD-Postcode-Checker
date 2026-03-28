@@ -14,6 +14,7 @@ php scripts/clover-to-json.php coverage/clover.xml > coverage/coverage-summary.j
 ## Output
 
 JSON with three sections:
+
 - `generated` – Unix timestamp
 - `totals` – Project-wide coverage
 - `files` – Per-file breakdown with uncovered line numbers
@@ -22,37 +23,40 @@ Example:
 
 ```json
 {
-    "generated": "1763041588",
-    "totals": {
-        "statements": 45,
-        "covered_statements": 27,
-        "coverage_percent": 60
-    },
-    "files": [
-        {
-            "file": "/path/to/src/functions.php",
-            "statements": 45,
-            "covered_statements": 27,
-            "coverage_percent": 60,
-            "uncovered_lines": [38, 46, 65, 66, 67]
-        }
-    ]
+  "generated": "1763041588",
+  "totals": {
+    "statements": 45,
+    "covered_statements": 27,
+    "coverage_percent": 60
+  },
+  "files": [
+    {
+      "file": "/path/to/src/functions.php",
+      "statements": 45,
+      "covered_statements": 27,
+      "coverage_percent": 60,
+      "uncovered_lines": [38, 46, 65, 66, 67]
+    }
+  ]
 }
 ```
 
 ## Filter Results
 
 Show files below 80% coverage:
+
 ```bash
 php scripts/clover-to-json.php coverage/clover.xml --min-percent 80
 ```
 
 Show the 5 lowest-coverage files:
+
 ```bash
 php scripts/clover-to-json.php coverage/clover.xml --top 5
 ```
 
 Combine filters:
+
 ```bash
 php scripts/clover-to-json.php coverage/clover.xml --top 10 --min-percent 90
 ```

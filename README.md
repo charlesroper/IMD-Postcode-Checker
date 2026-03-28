@@ -28,6 +28,7 @@ The tool handles all UK postcode formats:
 **Standard formats:** A9 9AA, A9A 9AA, A99 9AA, AA9 9AA, AA9A 9AA, AA99 9AA
 
 **Special cases:**
+
 - BFPO postcodes (British Forces Post Office)
 - GIR 0AA (historic Girobank code)
 - Overseas territories (Ascension Island, Falklands, Gibraltar, etc.)
@@ -67,6 +68,7 @@ php scripts/clover-to-json.php coverage/clover.xml > coverage/coverage-summary.j
 ```
 
 Documentation:
+
 - [TESTING.md](TESTING.md) – Full testing guide
 - [TEST_SUMMARY.md](TEST_SUMMARY.md) – Test details
 - [scripts/README.md](scripts/README.md) – Coverage converter

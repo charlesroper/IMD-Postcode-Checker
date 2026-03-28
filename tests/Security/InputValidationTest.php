@@ -51,7 +51,7 @@ class InputValidationTest extends TestCase
     {
         $malformedInputs = [
             "\x00\x00\x00",
-            "���",
+            '���',
             "\r\r\r\n\n\n",
         ];
 
@@ -64,9 +64,9 @@ class InputValidationTest extends TestCase
     public function testNormalisePostcodeHandlesUnicodeEdgeCases(): void
     {
         $unicodeInputs = [
-            "SW1A\u{200B}1AA",  // Zero-width space
-            "SW1A\u{FEFF}1AA",  // Zero-width no-break space
-            "SW1A\u{202E}1AA",  // Right-to-left override
+            "SW1A\u{200B}1AA", // Zero-width space
+            "SW1A\u{FEFF}1AA", // Zero-width no-break space
+            "SW1A\u{202E}1AA", // Right-to-left override
         ];
 
         foreach ($unicodeInputs as $input) {

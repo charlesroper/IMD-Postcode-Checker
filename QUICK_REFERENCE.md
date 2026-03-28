@@ -4,11 +4,11 @@
 
 ## Test Suites
 
-| Suite       | Count | Focus              |
-| ----------- | ----- | ------------------ |
+| Suite       | Count | Focus                |
+| ----------- | ----- | -------------------- |
 | Unit        | 57    | Individual functions |
 | Integration | 18    | Workflows & database |
-| Security    | 23    | SQL injection & XSS |
+| Security    | 23    | SQL injection & XSS  |
 
 ## Run Tests
 
@@ -31,6 +31,7 @@ php scripts/clover-to-json.php coverage/clover.xml > coverage.json  # JSON for L
 ## Tested
 
 **Functions:**
+
 - `normalisePostcode()` – 22 tests (includes special UK formats)
 - `getPostcodesArray()` – 12 tests
 - `postcodePlaceholdersForSql()` – 6 tests

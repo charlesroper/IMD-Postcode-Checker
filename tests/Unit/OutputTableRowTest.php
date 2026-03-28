@@ -14,7 +14,7 @@ class OutputTableRowTest extends TestCase
             'postcode' => 'SW1A 1AA',
             'lsoa_name_2021' => 'Westminster 001A',
             'imd_rank' => '15234',
-            'imd_decile' => '5'
+            'imd_decile' => '5',
         ];
         $fields = ['postcode', 'lsoa_name_2021', 'imd_rank', 'imd_decile'];
 
@@ -88,7 +88,7 @@ class OutputTableRowTest extends TestCase
     {
         $row = [
             'imd_rank' => 12345,
-            'imd_decile' => 7
+            'imd_decile' => 7,
         ];
         $fields = ['imd_rank', 'imd_decile'];
 
@@ -124,6 +124,7 @@ class OutputTableRowTest extends TestCase
         $row = ['field' => 'javascript:alert(1)'];
         $result = outputTableRow($row, ['field']);
         $this->assertStringContainsString('javascript:alert(1)', $result);
+
         // This is safe in table cells since it's not in an href attribute
     }
 
@@ -142,7 +143,7 @@ class OutputTableRowTest extends TestCase
         $row = [
             'a' => 'First',
             'b' => 'Second',
-            'c' => 'Third'
+            'c' => 'Third',
         ];
         $fields = ['c', 'a', 'b'];
 
