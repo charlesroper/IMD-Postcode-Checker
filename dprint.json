@@ -1,7 +1,7 @@
 {
   "mago": {
     "phpVersionMajor": 8,
-    "phpVersionMinor": 3
+    "phpVersionMinor": 5
   },
   "includes": [
     "**/*.php"
