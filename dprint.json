@@ -1,0 +1,16 @@
+{
+  "mago": {
+    "phpVersionMajor": 8,
+    "phpVersionMinor": 3
+  },
+  "includes": [
+    "**/*.php"
+  ],
+  "excludes": [
+    "vendor/",
+    "node_modules/"
+  ],
+  "plugins": [
+    "./node_modules/@dprint/mago/plugin.wasm"
+  ]
+}

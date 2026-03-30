@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "format": "dprint fmt",
+    "format:check": "dprint check"
+  },
+  "devDependencies": {
+    "@dprint/mago": "^0.8.0",
+    "dprint": "^0.53.1"
+  }
+}
