@@ -11,7 +11,7 @@ require_once __DIR__ . '/src/functions.php';
 // ini_set('error_log', 'php://stdout');
 // error_reporting(E_ALL);
 
-$current_year = new DateTime('now', new DateTimeZone('Europe/London'))->format('Y');
+$current_year = (new DateTime('now', new DateTimeZone('Europe/London')))->format('Y');
 
 $postcodes_querystring_input = filter_input(INPUT_GET, 'p');
 $postcodes_querystring = is_string($postcodes_querystring_input) ? $postcodes_querystring_input : null;
@@ -31,35 +31,42 @@ if (count($postcodes) > $MAX_POSTCODES) {
 $placeholders = postcodePlaceholdersForSql($postcodes_querystring);
 $decile = getDecileInt();
 
-// Only run queries if not exceeding limit
-if (!$postcodes_error) {
-    // Initialise the SQLite database
-    $db = new PDO('sqlite:./db/imd25.sqlite3');
+// Only run queries if not exceeding limit and there are postcodes to look up
+if (!$postcodes_error && count($postcodes) > 0) {
+    try {
+        // Initialise the SQLite database
+        $db = new PDO('sqlite:./db/imd25.sqlite3');
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Get a count of postcodes matching those entered into the textarea. This is
-    // used prevent empty results from rendering.
-    $sql = $db->prepare("SELECT COUNT(*) FROM imd25 WHERE postcode IN ($placeholders)");
-    $sql->execute($postcodes);
-    $imd_data_count = (int) $sql->fetchColumn();
+        // Get a count of postcodes matching those entered into the textarea. This is
+        // used to prevent empty results from rendering.
+        $sql = $db->prepare("SELECT COUNT(*) FROM imd25 WHERE postcode IN ($placeholders)");
+        $sql->execute($postcodes);
+        $imd_data_count = (int) $sql->fetchColumn();
 
-    // The main database query
-    $sql = $db->prepare("SELECT
-            *
-        FROM
-            imd25
-        WHERE
-            postcode IN ($placeholders)
-        AND
-            imd_decile <= ?");
+        // The main database query
+        $sql = $db->prepare("SELECT
+                *
+            FROM
+                imd25
+            WHERE
+                postcode IN ($placeholders)
+            AND
+                imd_decile <= ?");
 
-    // Add the decile as the final parameter
-    $params = array_merge($postcodes, [$decile]);
+        // Add the decile as the final parameter
+        $params = array_merge($postcodes, [$decile]);
 
-    // Execute the statement with all parameters
-    $sql->execute($params);
+        // Execute the statement with all parameters
+        $sql->execute($params);
 
-    // Now fetch the data
-    $imd_data = $sql->fetchAll(PDO::FETCH_ASSOC);
+        // Now fetch the data
+        $imd_data = $sql->fetchAll(PDO::FETCH_ASSOC);
+    } catch (\PDOException $e) {
+        $postcodes_error = 'Database error: unable to query the IMD data. Please ensure the database has been set up correctly.';
+        $imd_data_count = 0;
+        $imd_data = [];
+    }
 }
 
 $showResults = !$postcodes_error && count($postcodes) > 0;
@@ -179,7 +186,7 @@ $showResults = !$postcodes_error && count($postcodes) > 0;
     <div class="footer-content">
       <p>The IMD Checker is a tiny thing made with <a href="https://pagespeed.web.dev/analysis/https-charlesroper-com-tools-imd/gptrtbpnfx?form_factor=mobile">lean</a> but boring code, some open data, and plenty of ❤️.</p>
       <p>Originally made for the <a href="https://www.field-studies-council.org/">Field Studies Council</a>. Copyright &copy; <?php echo
-          new DateTime('now', new DateTimeZone('Europe/London'))->format('Y')
+          (new DateTime('now', new DateTimeZone('Europe/London')))->format('Y')
       ; ?> Charles Roper. <a href="https://charlesroper.com/">Get in touch</a>.</p>
       <p>
         <svg viewBox="0 0 1065 214" xmlns="http://www.w3.org/2000/svg" style="width:200px; margin: 1.5em 0 0 -.7em;">
