@@ -11,13 +11,12 @@ require_once __DIR__ . '/src/functions.php';
 // ini_set('error_log', 'php://stdout');
 // error_reporting(E_ALL);
 
-$current_year = (new DateTime('now', new DateTimeZone('Europe/London')))->format('Y');
+$current_year = new DateTime('now', new DateTimeZone('Europe/London'))->format('Y');
 
 $postcodes_querystring_input = filter_input(INPUT_GET, 'p');
 $postcodes_querystring = is_string($postcodes_querystring_input) ? $postcodes_querystring_input : null;
 
 // (Helper functions loaded from src/functions.php)
-
 $postcodes = getPostcodesArray($postcodes_querystring);
 
 // Limit postcodes to 900
@@ -186,7 +185,7 @@ $showResults = !$postcodes_error && count($postcodes) > 0;
     <div class="footer-content">
       <p>The IMD Checker is a tiny thing made with <a href="https://pagespeed.web.dev/analysis/https-charlesroper-com-tools-imd/gptrtbpnfx?form_factor=mobile">lean</a> but boring code, some open data, and plenty of ❤️.</p>
       <p>Originally made for the <a href="https://www.field-studies-council.org/">Field Studies Council</a>. Copyright &copy; <?php echo
-          (new DateTime('now', new DateTimeZone('Europe/London')))->format('Y')
+          new DateTime('now', new DateTimeZone('Europe/London'))->format('Y')
       ; ?> Charles Roper. <a href="https://charlesroper.com/">Get in touch</a>.</p>
       <p>
         <svg viewBox="0 0 1065 214" xmlns="http://www.w3.org/2000/svg" style="width:200px; margin: 1.5em 0 0 -.7em;">
