@@ -81,4 +81,4 @@ No runtime dependencies – just PHP and SQLite:
 - One stylesheet: `style.css`
 - One SQLite database: `db/imd25.sqlite3`
 
-**Requirements:** PHP 8.0+ with `pdo_sqlite` extension. Composer is only needed locally for testing.
+**Requirements:** PHP 8.5+ with `pdo_sqlite` extension. Composer is only needed locally for testing.
