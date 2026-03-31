@@ -202,7 +202,7 @@ $showResults = !$postcodes_error && count($postcodes) > 0;
         </a>
       </p>
 
-      <p class="footer-separate">Contains data made available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a></p>
+      <p class="footer-separate">Contains data made available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open&nbsp;Government&nbsp;Licence&nbsp;v3.0</a></p>
       <p>&copy; Crown copyright and database rights <?php echo $current_year; ?></p>
     </div>
   </footer>
