@@ -3,7 +3,7 @@
   "description": "English IMD 2025 Postcode Checker",
   "type": "project",
   "require": {
-    "php": ">=8.0"
+    "php": ">=8.5"
   },
   "require-dev": {
     "phpunit/phpunit": "^10.0"
