@@ -375,11 +375,11 @@ const NODES = [
   // Database
   {
     id: 'db', x: 680, y: 280, w: 190, h: 65,
-    label: '🗄️ imd25.sqlite3', sub: 'SQLite · 32,844 LSOA rows',
+    label: '🗄️ imd25.sqlite3', sub: 'SQLite · postcode → LSOA mapping',
     fill: 'url(#gradDB)', stroke: '#f59e0b',
     info: {
       title: 'db/imd25.sqlite3',
-      body: 'SQLite database containing England\'s IMD 2025 data. Table <code>imd25</code> has one row per postcode with columns: <code>postcode</code>, <code>lsoa_name_2021</code>, <code>imd_rank</code>, <code>imd_decile</code>. Queried via PDO prepared statements to prevent SQL injection.'
+      body: 'SQLite database containing England\'s IMD 2025 data. Table <code>imd25</code> has one row per postcode with columns: <code>postcode</code>, <code>lsoa_name_2021</code>, <code>imd_rank</code>, <code>imd_decile</code>. Each postcode maps to one of 32,844 LSOAs. Queried via PDO prepared statements to prevent SQL injection.'
     }
   },
 
