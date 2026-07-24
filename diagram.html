@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IMD Postcode Checker – Architecture Diagram</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --panel: #1a1d2e;
+      --border: #2e3150;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+
+      /* Node colours */
+      --c-browser:   #64748b;
+      --c-entry:     #3b82f6;
+      --c-functions: #10b981;
+      --c-fn:        #059669;
+      --c-db:        #f59e0b;
+      --c-css:       #ec4899;
+      --c-html:      #6366f1;
+      --c-unit:      #a78bfa;
+      --c-int:       #818cf8;
+      --c-sec:       #f472b6;
+      --c-test-file: #c4b5fd;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 12px 20px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    header h1 { font-size: 1rem; font-weight: 600; letter-spacing: .02em; }
+    header p  { font-size: .8rem; color: var(--muted); }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .72rem;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    #canvas-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+    }
+    #canvas-wrap.dragging { cursor: grabbing; }
+
+    svg {
+      width: 100%; height: 100%;
+      user-select: none;
+    }
+
+    /* ── node base styles ── */
+    .node rect, .node polygon {
+      rx: 8;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,.5));
+      transition: filter .15s, transform .15s;
+    }
+    .node:hover rect,
+    .node:hover polygon {
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,.7)) brightness(1.15);
+      cursor: pointer;
+    }
+    .node text {
+      font-size: 12px;
+      fill: #fff;
+      font-weight: 600;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+    .node .sub {
+      font-size: 9.5px;
+      fill: rgba(255,255,255,.6);
+      font-weight: 400;
+    }
+    .node .icon {
+      font-size: 15px;
+      fill: rgba(255,255,255,.85);
+    }
+
+    /* ── edge paths ── */
+    .edge {
+      fill: none;
+      stroke-width: 1.8;
+      opacity: .6;
+      stroke-dasharray: 5 4;
+      animation: dash 18s linear infinite;
+    }
+    .edge.solid {
+      stroke-dasharray: none;
+      animation: none;
+      opacity: .8;
+    }
+    @keyframes dash {
+      to { stroke-dashoffset: -200; }
+    }
+
+    /* ── tooltip ── */
+    #tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: #1e2235;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: .78rem;
+      max-width: 280px;
+      line-height: 1.55;
+      box-shadow: 0 8px 24px rgba(0,0,0,.6);
+      opacity: 0;
+      transition: opacity .15s;
+      z-index: 10;
+    }
+    #tooltip.show { opacity: 1; }
+    #tooltip strong { color: #fff; display: block; margin-bottom: 4px; font-size: .85rem; }
+    #tooltip span { color: var(--muted); }
+    #tooltip code {
+      background: rgba(255,255,255,.08);
+      border-radius: 4px;
+      padding: 0 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: .78rem;
+      color: #a5f3fc;
+    }
+
+    /* controls */
+    #controls {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    #controls button {
+      width: 32px; height: 32px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #controls button:hover { background: #252844; }
+
+    .section-label {
+      font-size: 10px;
+      fill: var(--muted);
+      text-anchor: middle;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .section-bg {
+      rx: 12;
+      fill: rgba(255,255,255,.025);
+      stroke: rgba(255,255,255,.06);
+      stroke-width: 1;
+    }
+
+    .badge rect {
+      rx: 4;
+    }
+    .badge text {
+      font-size: 9px;
+      fill: #fff;
+      font-weight: 700;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>IMD Postcode Checker — Architecture Diagram</h1>
+    <p>Hover nodes for details · Scroll or pinch to zoom · Drag to pan</p>
+  </div>
+  <nav class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-browser)"></div>Browser</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-entry)"></div>Entry Point</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-functions)"></div>Function Library</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-db)"></div>Database</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-css)"></div>Styles</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-unit)"></div>Unit Tests</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-int)"></div>Integration Tests</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-sec)"></div>Security Tests</div>
+  </nav>
+</header>
+
+<div id="canvas-wrap">
+  <svg id="svg" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrowBlue"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#3b82f6"/></marker>
+      <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#10b981"/></marker>
+      <marker id="arrowAmber" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#f59e0b"/></marker>
+      <marker id="arrowPink"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ec4899"/></marker>
+      <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#a78bfa"/></marker>
+      <marker id="arrowIndigo" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#818cf8"/></marker>
+      <marker id="arrowFuchsia" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#f472b6"/></marker>
+      <marker id="arrowGray"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#64748b"/></marker>
+      <filter id="glow-blue"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <linearGradient id="gradEntry" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#2563eb"/>
+        <stop offset="100%" style="stop-color:#1d4ed8"/>
+      </linearGradient>
+      <linearGradient id="gradFunctions" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#059669"/>
+        <stop offset="100%" style="stop-color:#047857"/>
+      </linearGradient>
+      <linearGradient id="gradDB" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#d97706"/>
+        <stop offset="100%" style="stop-color:#b45309"/>
+      </linearGradient>
+      <linearGradient id="gradCSS" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#db2777"/>
+        <stop offset="100%" style="stop-color:#be185d"/>
+      </linearGradient>
+      <linearGradient id="gradBrowser" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#475569"/>
+        <stop offset="100%" style="stop-color:#334155"/>
+      </linearGradient>
+    </defs>
+    <g id="scene"></g>
+  </svg>
+  <div id="tooltip"></div>
+  <div id="controls">
+    <button id="btn-zoom-in"  title="Zoom in">+</button>
+    <button id="btn-zoom-out" title="Zoom out">−</button>
+    <button id="btn-reset"    title="Reset view">⌖</button>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA MODEL
+// ─────────────────────────────────────────────
+
+const NODES = [
+  // Browser
+  {
+    id: 'browser', x: 520, y: 40, w: 160, h: 50,
+    label: '🌐 Browser', sub: 'HTTP GET request',
+    fill: 'url(#gradBrowser)', stroke: '#64748b',
+    info: {
+      title: 'Browser / User',
+      body: 'A user pastes postcodes into the textarea and optionally sets a max decile, then submits the form. The browser sends a <code>GET</code> request to <code>index.php</code> with query parameters <code>?p=...</code> (postcodes) and <code>?d=...</code> (decile).'
+    }
+  },
+
+  // Entry point
+  {
+    id: 'index', x: 410, y: 160, w: 200, h: 60,
+    label: '📄 index.php', sub: 'Entry point · HTML + PHP',
+    fill: 'url(#gradEntry)', stroke: '#3b82f6',
+    info: {
+      title: 'index.php',
+      body: 'The single entry-point file. Reads query-string params, calls helper functions from <code>src/functions.php</code>, queries the SQLite database via <code>PDO</code>, and renders the complete HTML page (form + results table).'
+    }
+  },
+
+  // Function library
+  {
+    id: 'functions', x: 30, y: 290, w: 200, h: 55,
+    label: '⚙️ src/functions.php', sub: 'Shared function library',
+    fill: 'url(#gradFunctions)', stroke: '#10b981',
+    info: {
+      title: 'src/functions.php',
+      body: 'All business logic lives here, separated from presentation. Contains 7 pure / near-pure functions: postcode normalisation, input parsing, SQL placeholder generation, and HTML output rendering.'
+    }
+  },
+
+  // Individual functions
+  {
+    id: 'fn-normalise', x: 10, y: 390, w: 180, h: 38,
+    label: 'normalisePostcode()', sub: 'Validates & formats UK postcode',
+    fill: '#065f46', stroke: '#059669', small: true,
+    info: {
+      title: 'normalisePostcode(string $postcode): string',
+      body: 'Uppercases and strips non-alphanumeric chars. Handles special cases: BFPO postcodes, GIR 0AA, partial codes. Validates against a strict UK postcode regex and reconstructs with proper spacing. Returns empty string for invalid input.'
+    }
+  },
+  {
+    id: 'fn-getArr', x: 10, y: 438, w: 180, h: 38,
+    label: 'getPostcodesArray()', sub: 'Splits textarea → postcode array',
+    fill: '#065f46', stroke: '#059669', small: true,
+    info: {
+      title: 'getPostcodesArray(?string $input): array',
+      body: 'Splits raw textarea input on CR, LF or CRLF. Calls <code>normalisePostcode()</code> on each line and collects non-empty results. Returns an array of normalised, unique postcodes.'
+    }
+  },
+  {
+    id: 'fn-decile', x: 10, y: 486, w: 180, h: 38,
+    label: 'getDecileInt()', sub: 'Validates decile GET param (1-10)',
+    fill: '#065f46', stroke: '#059669', small: true,
+    info: {
+      title: 'getDecileInt(): int',
+      body: 'Uses <code>filter_input(INPUT_GET, \'d\', FILTER_VALIDATE_INT)</code> with range 1–10. Defaults to 10 (all areas) when the parameter is absent or invalid.'
+    }
+  },
+  {
+    id: 'fn-placeholders', x: 10, y: 534, w: 180, h: 38,
+    label: 'postcodePlaceholdersForSql()', sub: 'Builds SQL IN() placeholders',
+    fill: '#065f46', stroke: '#059669', small: true,
+    info: {
+      title: 'postcodePlaceholdersForSql(?string $input): string',
+      body: 'Calls <code>getPostcodesArray()</code> then <code>array_fill()</code> to produce a comma-separated string of <code>?</code> placeholders for a PDO prepared statement IN() clause (e.g. <code>?,?,?</code>).'
+    }
+  },
+  {
+    id: 'fn-textarea', x: 10, y: 582, w: 180, h: 38,
+    label: 'postcodesForTextarea()', sub: 'Formats postcodes → textarea value',
+    fill: '#065f46', stroke: '#059669', small: true,
+    info: {
+      title: 'postcodesForTextarea(?string $input): string',
+      body: 'Calls <code>getPostcodesArray()</code> and rejoins the normalised postcodes with newlines so the textarea repopulates with cleaned values after form submission.'
+    }
+  },
+  {
+    id: 'fn-decileinput', x: 10, y: 630, w: 180, h: 38,
+    label: 'decileForInput()', sub: 'Returns decile for <input> value',
+    fill: '#065f46', stroke: '#059669', small: true,
+    info: {
+      title: 'decileForInput(): string',
+      body: 'Returns the validated decile as a string, or an empty string when the <code>d</code> query parameter was not set — so the input field appears blank (meaning "all deciles") rather than showing a default.'
+    }
+  },
+  {
+    id: 'fn-tablerow', x: 10, y: 678, w: 180, h: 38,
+    label: 'outputTableRow()', sub: 'Renders XSS-safe HTML table row',
+    fill: '#065f46', stroke: '#059669', small: true,
+    info: {
+      title: 'outputTableRow(array $row, array $fields): string',
+      body: 'Loops over the requested field names, retrieves values from the DB row array, applies <code>htmlspecialchars()</code> with ENT_QUOTES + UTF-8, and returns a complete <code>&lt;tr&gt;...&lt;/tr&gt;</code> string.'
+    }
+  },
+
+  // Database
+  {
+    id: 'db', x: 680, y: 280, w: 190, h: 65,
+    label: '🗄️ imd25.sqlite3', sub: 'SQLite · postcode → LSOA mapping',
+    fill: 'url(#gradDB)', stroke: '#f59e0b',
+    info: {
+      title: 'db/imd25.sqlite3',
+      body: 'SQLite database containing England\'s IMD 2025 data. Table <code>imd25</code> has one row per postcode with columns: <code>postcode</code>, <code>lsoa_name_2021</code>, <code>imd_rank</code>, <code>imd_decile</code>. Each postcode maps to one of 32,844 LSOAs. Queried via PDO prepared statements to prevent SQL injection.'
+    }
+  },
+
+  // CSS
+  {
+    id: 'css', x: 700, y: 160, w: 150, h: 50,
+    label: '🎨 style.css', sub: 'Lean, responsive styles',
+    fill: 'url(#gradCSS)', stroke: '#ec4899',
+    info: {
+      title: 'style.css',
+      body: 'Minimal stylesheet using CSS custom properties (design tokens). Linked in the <code>&lt;head&gt;</code> of the HTML output from <code>index.php</code>. Handles layout, form, table, error display and footer styling.'
+    }
+  },
+
+  // Test suites
+  {
+    id: 'tests-unit', x: 200, y: 420, w: 175, h: 48,
+    label: '🧪 Unit Tests', sub: '8 test files · tests/Unit/',
+    fill: '#4c1d95', stroke: '#a78bfa',
+    info: {
+      title: 'tests/Unit/ (8 files)',
+      body: 'PHPUnit tests covering every function in isolation:\n• NormalisePostcodeTest\n• PostcodeValidationTest\n• GetPostcodesArrayTest\n• GetDecileIntTest\n• DecileForInputTest\n• PostcodePlaceholdersForSqlTest\n• PostcodesForTextareaTest\n• OutputTableRowTest'
+    }
+  },
+  {
+    id: 'tests-integration', x: 200, y: 490, w: 175, h: 48,
+    label: '🔗 Integration Tests', sub: '2 test files · tests/Integration/',
+    fill: '#312e81', stroke: '#818cf8',
+    info: {
+      title: 'tests/Integration/ (2 files)',
+      body: 'End-to-end workflow and database tests:\n• DatabaseOperationsTest – tests PDO queries against a real SQLite DB\n• WorkflowTest – tests the full request-to-results pipeline'
+    }
+  },
+  {
+    id: 'tests-security', x: 200, y: 560, w: 175, h: 48,
+    label: '🔒 Security Tests', sub: '3 test files · tests/Security/',
+    fill: '#831843', stroke: '#f472b6',
+    info: {
+      title: 'tests/Security/ (3 files)',
+      body: 'Security-focused test suite:\n• SqlInjectionTest – verifies parameterised queries resist injection\n• XssPreventionTest – confirms htmlspecialchars() in outputTableRow()\n• InputValidationTest – tests edge cases, boundary values, malformed input'
+    }
+  },
+
+  // PHPUnit config
+  {
+    id: 'phpunit', x: 400, y: 490, w: 145, h: 44,
+    label: '⚡ phpunit.xml', sub: 'Test runner config',
+    fill: '#1c1917', stroke: '#78716c',
+    info: {
+      title: 'phpunit.xml',
+      body: 'Configures PHPUnit test runner. Defines three test suites: <code>Unit</code>, <code>Integration</code>, <code>Security</code>. Run with <code>composer test</code>. Code coverage is generated via <code>composer test-coverage</code>.'
+    }
+  },
+];
+
+const EDGES = [
+  // Browser → index
+  { from: 'browser', to: 'index',     stroke: '#64748b', marker: 'arrowGray',    solid: false, label: 'GET ?p=&d=' },
+  // index → functions
+  { from: 'index',   to: 'functions', stroke: '#10b981', marker: 'arrowGreen',   solid: true,  label: 'require_once' },
+  // index → db
+  { from: 'index',   to: 'db',        stroke: '#f59e0b', marker: 'arrowAmber',   solid: false, label: 'PDO query' },
+  // index → css
+  { from: 'index',   to: 'css',       stroke: '#ec4899', marker: 'arrowPink',    solid: true,  label: 'link href' },
+  // function call chains
+  { from: 'fn-getArr',      to: 'fn-normalise',    stroke: '#34d399', marker: 'arrowGreen', solid: false, label: 'calls' },
+  { from: 'fn-placeholders',to: 'fn-getArr',        stroke: '#34d399', marker: 'arrowGreen', solid: false, label: 'calls' },
+  { from: 'fn-textarea',    to: 'fn-getArr',        stroke: '#34d399', marker: 'arrowGreen', solid: false, label: 'calls' },
+  { from: 'fn-decileinput', to: 'fn-decile',        stroke: '#34d399', marker: 'arrowGreen', solid: false, label: 'calls' },
+  // tests → functions
+  { from: 'tests-unit',        to: 'functions', stroke: '#a78bfa', marker: 'arrowPurple',  solid: false, label: 'tests' },
+  { from: 'tests-integration', to: 'db',        stroke: '#818cf8', marker: 'arrowIndigo',  solid: false, label: 'tests' },
+  { from: 'tests-security',    to: 'functions', stroke: '#f472b6', marker: 'arrowFuchsia', solid: false, label: 'tests' },
+  // phpunit
+  { from: 'phpunit', to: 'tests-unit',        stroke: '#a78bfa', marker: 'arrowPurple', solid: true, label: 'runs' },
+  { from: 'phpunit', to: 'tests-integration', stroke: '#818cf8', marker: 'arrowIndigo', solid: true, label: 'runs' },
+  { from: 'phpunit', to: 'tests-security',    stroke: '#f472b6', marker: 'arrowFuchsia', solid: true, label: 'runs' },
+  // functions group → fns
+  { from: 'functions', to: 'fn-normalise',    stroke: '#34d399', marker: 'arrowGreen', solid: true },
+  { from: 'functions', to: 'fn-getArr',       stroke: '#34d399', marker: 'arrowGreen', solid: true },
+  { from: 'functions', to: 'fn-decile',       stroke: '#34d399', marker: 'arrowGreen', solid: true },
+  { from: 'functions', to: 'fn-placeholders', stroke: '#34d399', marker: 'arrowGreen', solid: true },
+  { from: 'functions', to: 'fn-textarea',     stroke: '#34d399', marker: 'arrowGreen', solid: true },
+  { from: 'functions', to: 'fn-decileinput',  stroke: '#34d399', marker: 'arrowGreen', solid: true },
+  { from: 'functions', to: 'fn-tablerow',     stroke: '#34d399', marker: 'arrowGreen', solid: true },
+];
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function el(tag, attrs = {}, text = null) {
+  const e = document.createElementNS(SVG_NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (text !== null) e.textContent = text;
+  return e;
+}
+
+function nodeById(id) { return NODES.find(n => n.id === id); }
+
+function cx(n) { return n.x + n.w / 2; }
+function cy(n) { return n.y + n.h / 2; }
+
+// Bezier midpoint helper
+function edgePath(from, to) {
+  const fx = cx(from), fy = cy(from);
+  const tx = cx(to),   ty = cy(to);
+
+  // offset source/target to border
+  const dx = tx - fx, dy = ty - fy;
+  const len = Math.sqrt(dx*dx + dy*dy) || 1;
+  const sx = fx + (dx/len) * (from.w/2);
+  const sy = fy + (dy/len) * (from.h/2);
+  const ex = tx - (dx/len) * (to.w/2 + 8);
+  const ey = ty - (dy/len) * (to.h/2 + 8);
+
+  const mx = (sx + ex) / 2;
+  const my = (sy + ey) / 2;
+
+  // slight curve
+  const perpX = -(ey - sy) * 0.15;
+  const perpY =  (ex - sx) * 0.15;
+
+  return `M${sx},${sy} Q${mx+perpX},${my+perpY} ${ex},${ey}`;
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+
+const scene = document.getElementById('scene');
+
+// 1. Section backgrounds
+const sections = [
+  { label: 'ENTRY POINT', x: 390, y: 145, w: 240, h: 95 },
+  { label: 'FUNCTION LIBRARY', x: -5, y: 275, w: 220, h: 460 },
+  { label: 'DATABASE', x: 655, y: 260, w: 240, h: 105 },
+  { label: 'STYLES', x: 675, y: 145, w: 195, h: 80 },
+  { label: 'TEST SUITE', x: 180, y: 405, w: 390, h: 220 },
+];
+
+for (const s of sections) {
+  const g = el('g');
+  g.appendChild(el('rect', {
+    class: 'section-bg',
+    x: s.x, y: s.y, width: s.w, height: s.h
+  }));
+  g.appendChild(el('text', {
+    class: 'section-label',
+    x: s.x + s.w / 2,
+    y: s.y + 14
+  }, s.label));
+  scene.appendChild(g);
+}
+
+// 2. Edges (drawn before nodes so nodes appear on top)
+for (const e of EDGES) {
+  const fn = nodeById(e.from);
+  const tn = nodeById(e.to);
+  if (!fn || !tn) continue;
+
+  const g = el('g');
+  const path = el('path', {
+    class: 'edge' + (e.solid ? ' solid' : ''),
+    d: edgePath(fn, tn),
+    stroke: e.stroke,
+    'marker-end': `url(#${e.marker})`,
+  });
+  g.appendChild(path);
+
+  if (e.label) {
+    const fx = cx(fn), fy = cy(fn);
+    const tx = cx(tn), ty = cy(tn);
+    const lx = (fx + tx) / 2 + 4;
+    const ly = (fy + ty) / 2 - 6;
+    const t = el('text', {
+      x: lx, y: ly,
+      'font-size': '8',
+      fill: e.stroke,
+      opacity: '0.7',
+      'text-anchor': 'middle',
+      'pointer-events': 'none',
+    }, e.label);
+    g.appendChild(t);
+  }
+
+  scene.appendChild(g);
+}
+
+// 3. Nodes
+const tooltip = document.getElementById('tooltip');
+
+for (const n of NODES) {
+  const g = el('g', { class: 'node', 'data-id': n.id });
+
+  // Background rect
+  g.appendChild(el('rect', {
+    x: n.x, y: n.y,
+    width: n.w, height: n.h,
+    rx: n.small ? 6 : 10,
+    fill: n.fill,
+    stroke: n.stroke,
+    'stroke-width': n.small ? 1 : 1.5,
+  }));
+
+  // Main label
+  const label = el('text', {
+    x: cx(n), y: n.small ? cy(n) - 8 : cy(n) - 10,
+    'font-size': n.small ? '10' : '12',
+  }, n.label);
+  g.appendChild(label);
+
+  // Sub label
+  if (n.sub) {
+    const sub = el('text', {
+      x: cx(n), y: n.small ? cy(n) + 8 : cy(n) + 10,
+      class: 'sub',
+      'font-size': n.small ? '8' : '9.5',
+    }, n.sub);
+    g.appendChild(sub);
+  }
+
+  // Tooltip interaction
+  if (n.info) {
+    g.addEventListener('mousemove', (ev) => {
+      const wrap = document.getElementById('canvas-wrap');
+      const rect = wrap.getBoundingClientRect();
+      const x = ev.clientX - rect.left;
+      const y = ev.clientY - rect.top;
+
+      const info = n.info;
+      tooltip.innerHTML = `<strong>${info.title}</strong><span>${info.body}</span>`;
+      tooltip.classList.add('show');
+
+      const tw = 280, th = 120;
+      const left = x + 16 + tw > rect.width  ? x - tw - 8 : x + 16;
+      const top  = y + 16 + th > rect.height ? y - th - 8 : y + 16;
+      tooltip.style.left = left + 'px';
+      tooltip.style.top  = top  + 'px';
+    });
+    g.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+  }
+
+  scene.appendChild(g);
+}
+
+// ─────────────────────────────────────────────
+// PAN & ZOOM
+// ─────────────────────────────────────────────
+
+let transform = { x: 0, y: 0, scale: 1 };
+let drag = null;
+
+function applyTransform() {
+  scene.setAttribute('transform',
+    `translate(${transform.x},${transform.y}) scale(${transform.scale})`
+  );
+}
+
+// Initial fit
+function fitView() {
+  const wrap = document.getElementById('canvas-wrap');
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+  const diagramW = 900, diagramH = 750;
+  const s = Math.min(W / diagramW, H / diagramH) * 0.9;
+  transform.scale = s;
+  transform.x = (W - diagramW * s) / 2;
+  transform.y = (H - diagramH * s) / 2;
+  applyTransform();
+}
+
+window.addEventListener('load', fitView);
+window.addEventListener('resize', fitView);
+
+const wrap = document.getElementById('canvas-wrap');
+
+wrap.addEventListener('mousedown', e => {
+  drag = { ox: e.clientX - transform.x, oy: e.clientY - transform.y };
+  wrap.classList.add('dragging');
+});
+window.addEventListener('mousemove', e => {
+  if (!drag) return;
+  transform.x = e.clientX - drag.ox;
+  transform.y = e.clientY - drag.oy;
+  applyTransform();
+});
+window.addEventListener('mouseup', () => { drag = null; wrap.classList.remove('dragging'); });
+
+wrap.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = wrap.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const factor = e.deltaY < 0 ? 1.1 : 0.9;
+  transform.x = mx - (mx - transform.x) * factor;
+  transform.y = my - (my - transform.y) * factor;
+  transform.scale *= factor;
+  applyTransform();
+}, { passive: false });
+
+// Touch pinch/pan
+let touches = {};
+wrap.addEventListener('touchstart', e => {
+  [...e.changedTouches].forEach(t => { touches[t.identifier] = { x: t.clientX, y: t.clientY }; });
+});
+wrap.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const ids = Object.keys(touches);
+  if (e.touches.length === 1) {
+    const t = e.touches[0];
+    const prev = touches[t.identifier];
+    if (prev) {
+      transform.x += t.clientX - prev.x;
+      transform.y += t.clientY - prev.y;
+      applyTransform();
+    }
+    touches[t.identifier] = { x: t.clientX, y: t.clientY };
+  } else if (e.touches.length === 2) {
+    const [a, b] = e.touches;
+    const prevA = touches[a.identifier], prevB = touches[b.identifier];
+    if (prevA && prevB) {
+      const prevDist = Math.hypot(prevA.x - prevB.x, prevA.y - prevB.y);
+      const newDist  = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      const factor = newDist / (prevDist || 1);
+      const rect = wrap.getBoundingClientRect();
+      const mx = (a.clientX + b.clientX) / 2 - rect.left;
+      const my = (a.clientY + b.clientY) / 2 - rect.top;
+      transform.x = mx - (mx - transform.x) * factor;
+      transform.y = my - (my - transform.y) * factor;
+      transform.scale *= factor;
+      applyTransform();
+    }
+    touches[a.identifier] = { x: a.clientX, y: a.clientY };
+    touches[b.identifier] = { x: b.clientX, y: b.clientY };
+  }
+}, { passive: false });
+wrap.addEventListener('touchend', e => {
+  [...e.changedTouches].forEach(t => delete touches[t.identifier]);
+});
+
+document.getElementById('btn-zoom-in').addEventListener('click', () => {
+  const rect = wrap.getBoundingClientRect();
+  const mx = rect.width/2, my = rect.height/2;
+  const f = 1.2;
+  transform.x = mx - (mx - transform.x) * f;
+  transform.y = my - (my - transform.y) * f;
+  transform.scale *= f;
+  applyTransform();
+});
+document.getElementById('btn-zoom-out').addEventListener('click', () => {
+  const rect = wrap.getBoundingClientRect();
+  const mx = rect.width/2, my = rect.height/2;
+  const f = 1/1.2;
+  transform.x = mx - (mx - transform.x) * f;
+  transform.y = my - (my - transform.y) * f;
+  transform.scale *= f;
+  applyTransform();
+});
+document.getElementById('btn-reset').addEventListener('click', fitView);
+</script>
+</body>
+</html>
