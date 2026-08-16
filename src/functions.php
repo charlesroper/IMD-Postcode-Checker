@@ -12,7 +12,7 @@ declare(strict_types=1);
 function normalisePostcode(string $postcode): string
 {
     // Uppercase and strip all non-alphanumeric characters
-    $clean = $postcode |> strtoupper(...) |> (fn($s) => preg_replace('/[^A-Z0-9]/', '', $s));
+    $clean = preg_replace('/[^A-Z0-9]/', '', strtoupper($postcode));
 
     // Handle empty input
     if ($clean === '') {
